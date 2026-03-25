@@ -114,6 +114,7 @@ body.government-mode .noise,
 body.government-mode .orb,
 body.government-mode .sticker-field,
 body.government-mode .raccoon-field,
+body.government-mode .bureaucrat-field,
 body.government-mode .disco-shell {
   display: none;
 }
@@ -469,6 +470,10 @@ button {
   background: var(--cyan);
 }
 
+.loud-button.bureaucrat {
+  background: linear-gradient(135deg, #ffe38b, #ffb45e);
+}
+
 .loud-button.outline {
   background: transparent;
   border-color: rgba(20, 33, 61, 0.2);
@@ -804,19 +809,19 @@ button {
 
 .raccoon {
   position: absolute;
-  left: -18rem;
+  left: -22rem;
   bottom: var(--lane, 10vh);
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.65rem 1rem;
+  padding: 0.8rem 1.15rem;
   border-radius: 999px;
   border: 1px solid rgba(20, 33, 61, 0.12);
   background: rgba(255, 249, 239, 0.92);
   color: var(--ink);
   box-shadow: 0 18px 30px rgba(20, 33, 61, 0.16);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -827,16 +832,68 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--cyan), var(--lime));
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   line-height: 1;
 }
 
 .raccoon-tag {
-  font-weight: 500;
+  font-weight: 700;
+}
+
+.bureaucrat-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.bureaucrat-coin {
+  position: absolute;
+  top: -5rem;
+  left: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff0b8, #f6bf4f 55%, #b97618 100%);
+  color: #6b4200;
+  font-size: 1.6rem;
+  box-shadow: 0 12px 28px rgba(20, 33, 61, 0.2);
+  animation: bureaucratCoinDrop 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.bureaucrat-chip {
+  position: absolute;
+  left: -12rem;
+  top: var(--lane, 30vh);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 244, 184, 0.96), rgba(255, 191, 111, 0.94));
+  border: 1px solid rgba(158, 101, 14, 0.22);
+  color: #7a4405;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 22px rgba(20, 33, 61, 0.16);
+  white-space: nowrap;
+  animation: bureaucratChipRun var(--chip-duration, 4.8s) linear forwards;
+}
+
+.bureaucrat-chip::before {
+  content: "◉";
+  font-size: 0.9rem;
 }
 
 .disco-shell {
@@ -972,6 +1029,34 @@ button {
   }
   100% {
     transform: translate3d(calc(100vw + 24rem), 0, 0) scale(var(--raccoon-scale, 1));
+    opacity: 1;
+  }
+}
+
+@keyframes bureaucratCoinDrop {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(58vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bureaucratChipRun {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(calc(100vw + 16rem), 0, 0) scale(1);
     opacity: 1;
   }
 }

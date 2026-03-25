@@ -98,6 +98,7 @@ const capeCountEl = document.getElementById("capeCount");
 const tickerTrack = document.getElementById("tickerTrack");
 const stickerField = document.getElementById("stickerField");
 const raccoonField = document.getElementById("raccoonField");
+const bureaucratField = document.getElementById("bureaucratField");
 const chaosBtn = document.getElementById("chaosBtn");
 const undoBtn = document.getElementById("undoBtn");
 const missionBtn = document.getElementById("missionBtn");
@@ -502,6 +503,43 @@ function releaseRaccoons(amount = 7) {
   }
 }
 
+function feedTheBureaucrat() {
+  const coin = document.createElement("div");
+  const chipLabels = [
+    "cafeteria chip",
+    "compliance chip",
+    "queue token",
+    "approval wafer",
+    "delay chip",
+    "form snack",
+  ];
+
+  coin.className = "bureaucrat-coin";
+  coin.textContent = "$";
+  bureaucratField.appendChild(coin);
+
+  window.setTimeout(() => {
+    coin.remove();
+  }, 1000);
+
+  window.setTimeout(() => {
+    for (let index = 0; index < 18; index += 1) {
+      const chip = document.createElement("div");
+
+      chip.className = "bureaucrat-chip";
+      chip.textContent = pickRandom(chipLabels);
+      chip.style.setProperty("--lane", `${8 + Math.random() * 72}vh`);
+      chip.style.setProperty("--chip-duration", `${3.6 + Math.random() * 1.8}s`);
+      chip.style.animationDelay = `${index * 0.08}s`;
+      bureaucratField.appendChild(chip);
+
+      window.setTimeout(() => {
+        chip.remove();
+      }, 5200);
+    }
+  }, 430);
+}
+
 function remixTicker() {
   const items = [...tickerItems, ...warnings, ...hotlineScripts];
   const chosen = Array.from({ length: 8 }, () => pickRandom(items));
@@ -560,8 +598,13 @@ document.getElementById("raccoonBtn").addEventListener("click", () => {
   inflateMetrics(1);
   setChaosContent(warningText, "Raccoons released successfully. Nobody is in charge anymore.");
   applyChaosStage();
-  releaseRaccoons(9);
-  spawnStickerBurst(16);
+  releaseRaccoons(14);
+});
+
+document.getElementById("bureaucratBtn").addEventListener("click", () => {
+  setChaosContent(warningText, "Coin accepted. Bureaucrat fed. Chips are now moving through the system.");
+  applyChaosStage();
+  feedTheBureaucrat();
 });
 
 document.getElementById("shuffleBtn").addEventListener("click", () => {
