@@ -123,7 +123,7 @@ function RidiculousPage() {
               </h1>
 
               <p className="mt-6 text-lg md:text-2xl text-slate-200 max-w-3xl leading-relaxed">
-                Behold a deluxe interface for implying momentum, suggesting capability, and radiating the faint but unmistakable scent of a meeting that could have been an email.
+                Behold a deluxe interface for implying momentum, suggesting capability, and radiating the faint but unmistakable scent of tax dollars invested into flying bacon.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
