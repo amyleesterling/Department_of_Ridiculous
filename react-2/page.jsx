@@ -2,6 +2,7 @@ const { useMemo, useState } = React;
 
 function RidiculousPage() {
   const [nothingScore, setNothingScore] = useState(91);
+  const [reassuranceBursts, setReassuranceBursts] = useState([]);
 
   const facts = [
     "Now with 83% more polished inactivity",
@@ -80,10 +81,49 @@ function RidiculousPage() {
     [`${nothingScore}%`, "nothing density"],
   ];
 
+  function triggerReassuranceBurst() {
+    const payloads = ["👍", "🙏", "THOUGHTS", "PRAYERS", "SYNERGY", "SUPPORT", "WE HEAR YOU", "🙏", "👍"];
+    const burstId = Date.now();
+
+    const nextBurst = Array.from({ length: 14 }, (_, index) => ({
+      id: `${burstId}-${index}`,
+      label: payloads[index % payloads.length],
+      left: 6 + Math.random() * 88,
+      drift: -24 + Math.random() * 48,
+      duration: 3.2 + Math.random() * 2.2,
+      delay: index * 0.08,
+      size: 0.95 + Math.random() * 1.2,
+    }));
+
+    setNothingScore((value) => Math.max(72, Math.min(123, value + 2)));
+    setReassuranceBursts((current) => [...current, ...nextBurst]);
+
+    window.setTimeout(() => {
+      setReassuranceBursts((current) => current.filter((item) => !item.id.startsWith(`${burstId}-`)));
+    }, 6500);
+  }
+
   return (
     <div className="min-h-screen overflow-hidden bg-slate-950 text-white relative">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.22),transparent_20%),radial-gradient(circle_at_80%_10%,rgba(168,85,247,0.24),transparent_25%),radial-gradient(circle_at_50%_80%,rgba(250,204,21,0.12),transparent_25%)]" />
       <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:50px_50px]" />
+      <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+        {reassuranceBursts.map((burst) => (
+          <div
+            key={burst.id}
+            className="absolute bottom-[-4rem] rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-black tracking-wide text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            style={{
+              left: `${burst.left}%`,
+              animation: `stakeholderFloat ${burst.duration}s cubic-bezier(0.2,0.78,0.18,1) ${burst.delay}s forwards`,
+              transform: `translateX(-50%) scale(${burst.size})`,
+              "--scale": burst.size,
+              "--drift-x": `${burst.drift}vw`,
+            }}
+          >
+            {burst.label}
+          </div>
+        ))}
+      </div>
 
       <header className="relative z-10 border-b border-white/10 backdrop-blur-md bg-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
@@ -135,7 +175,7 @@ function RidiculousPage() {
                 </button>
                 <button
                   className="rounded-2xl px-6 py-4 bg-white/10 border border-white/15 font-semibold hover:bg-white/20 transition"
-                  onClick={() => setNothingScore((value) => Math.max(72, value - 4))}
+                  onClick={triggerReassuranceBurst}
                 >
                   Reassure Stakeholders
                 </button>
