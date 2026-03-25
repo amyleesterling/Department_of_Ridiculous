@@ -100,8 +100,10 @@ const tickerTrack = document.getElementById("tickerTrack");
 const stickerField = document.getElementById("stickerField");
 const raccoonField = document.getElementById("raccoonField");
 const bureaucratField = document.getElementById("bureaucratField");
+const stampField = document.getElementById("stampField");
 const chaosBtn = document.getElementById("chaosBtn");
 const undoBtn = document.getElementById("undoBtn");
+const stampBtn = document.getElementById("stampBtn");
 const missionBtn = document.getElementById("missionBtn");
 const ledgerBtn = document.getElementById("ledgerBtn");
 const composerShell = document.getElementById("composerShell");
@@ -614,6 +616,29 @@ function feedTheBureaucrat() {
   }, 430);
 }
 
+function launchCeremonialStamp() {
+  const labels = [
+    "Approved For Overreaction",
+    "Filed Under Vibes",
+    "Absurdly Urgent",
+    "Ceremonial Use Only",
+    "Panic Endorsed",
+    "Administrative Glitter",
+  ];
+  const stamp = document.createElement("div");
+
+  stamp.className = "chaos-stamp";
+  stamp.textContent = pickRandom(labels);
+  stamp.style.left = `${18 + Math.random() * 64}%`;
+  stamp.style.top = `${18 + Math.random() * 58}%`;
+  stamp.style.setProperty("--stamp-tilt", `${-18 + Math.random() * 36}deg`);
+  stampField.appendChild(stamp);
+
+  window.setTimeout(() => {
+    stamp.remove();
+  }, 1900);
+}
+
 function remixTicker() {
   const items = [...tickerItems, ...warnings, ...hotlineScripts];
   const chosen = Array.from({ length: 8 }, () => pickRandom(items));
@@ -680,6 +705,8 @@ document.getElementById("bureaucratBtn").addEventListener("click", () => {
   applyChaosStage();
   feedTheBureaucrat();
 });
+
+stampBtn.addEventListener("click", launchCeremonialStamp);
 
 document.getElementById("shuffleBtn").addEventListener("click", () => {
   chaos = 48 + Math.floor(Math.random() * 53);

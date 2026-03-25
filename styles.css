@@ -115,6 +115,7 @@ body.government-mode .orb,
 body.government-mode .sticker-field,
 body.government-mode .raccoon-field,
 body.government-mode .bureaucrat-field,
+body.government-mode .stamp-field,
 body.government-mode .disco-shell {
   display: none;
 }
@@ -896,6 +897,53 @@ button {
   font-size: 0.9rem;
 }
 
+.stamp-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.stamp-launcher {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.2rem;
+  z-index: 4;
+  padding: 0.78rem 1rem;
+  border: 1px solid rgba(20, 33, 61, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 249, 239, 0.82);
+  color: var(--ink);
+  box-shadow: 0 12px 28px rgba(20, 33, 61, 0.16);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stamp-launcher:hover {
+  transform: translateY(-2px) rotate(-2deg);
+}
+
+.chaos-stamp {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  padding: 0.75rem 1.05rem;
+  border: 0.28rem double rgba(157, 23, 23, 0.9);
+  color: rgba(157, 23, 23, 0.92);
+  background: rgba(255, 249, 239, 0.12);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(0.95rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 24px rgba(20, 33, 61, 0.08);
+  transform: translate(-50%, -50%) rotate(var(--stamp-tilt, -8deg)) scale(0.7);
+  animation: stampSlam 1.8s cubic-bezier(0.16, 0.84, 0.25, 1) forwards;
+}
+
 .disco-shell {
   position: fixed;
   inset: 0;
@@ -1061,6 +1109,24 @@ button {
   }
 }
 
+@keyframes stampSlam {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--stamp-tilt, -8deg)) scale(1.8);
+    filter: blur(8px);
+  }
+  22% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--stamp-tilt, -8deg)) scale(0.88);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--stamp-tilt, -8deg)) scale(0.96);
+    filter: blur(0);
+  }
+}
+
 @keyframes bodyPulse {
   0%, 100% {
     filter: hue-rotate(0deg) saturate(1);
@@ -1203,6 +1269,7 @@ body.government-mode .composer-actions {
 body.government-mode .primary-button,
 body.government-mode .ghost-button,
 body.government-mode .loud-button,
+body.government-mode .stamp-launcher,
 body.government-mode .mission-meta span {
   display: inline-block;
   width: auto;
@@ -1313,7 +1380,8 @@ body.government-mode .composer-backdrop {
 
   .primary-button,
   .ghost-button,
-  .loud-button {
+  .loud-button,
+  .stamp-launcher {
     width: 100%;
   }
 
