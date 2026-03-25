@@ -131,6 +131,20 @@
       </article>
     </section>
 
+    <section class="emergency-ledger" data-chaos-box>
+      <div class="ledger-header">
+        <div>
+          <p class="panel-kicker" data-chaos-text>Citizen filing portal</p>
+          <h2 data-chaos-text>State Emergencies Recently Declared</h2>
+        </div>
+        <button class="ghost-button ledger-button" id="ledgerBtn">File Another Emergency</button>
+      </div>
+      <div class="ledger-grid" id="emergencyList"></div>
+      <p class="ledger-empty" id="emergencyEmpty" data-chaos-text>
+        No citizen emergencies filed yet. The state remains suspiciously calm.
+      </p>
+    </section>
+
     <section class="manifesto" data-chaos-box>
       <p class="panel-kicker" data-chaos-text>Institutional philosophy</p>
       <h2 data-chaos-text>We reject minimalism in favor of heroic overreaction.</h2>
@@ -153,6 +167,47 @@
 
   <div id="stickerField" class="sticker-field" aria-hidden="true"></div>
   <div id="raccoonField" class="raccoon-field" aria-hidden="true"></div>
+
+  <div class="composer-shell hidden" id="composerShell" aria-hidden="true">
+    <div class="composer-backdrop" id="composerBackdrop"></div>
+    <section class="composer-card" aria-labelledby="composerTitle" aria-modal="true" role="dialog">
+      <div class="composer-header">
+        <div>
+          <p class="panel-kicker">Emergency drafting desk</p>
+          <h2 id="composerTitle">Issue a New Ridiculous State Emergency</h2>
+        </div>
+        <button class="composer-close" id="composerClose" aria-label="Close emergency composer">X</button>
+      </div>
+      <form class="composer-form" id="emergencyForm">
+        <label class="composer-field">
+          <span>Emergency title</span>
+          <input
+            id="emergencyTitleInput"
+            name="title"
+            type="text"
+            maxlength="120"
+            placeholder="Example: Sudden Outbreak of Ceremonial Bagpipes"
+            required
+          />
+        </label>
+        <label class="composer-field">
+          <span>Official bulletin</span>
+          <textarea
+            id="emergencyTextInput"
+            name="details"
+            rows="5"
+            maxlength="420"
+            placeholder="Describe the absurd situation, who is affected, and what the public should absolutely not do."
+            required
+          ></textarea>
+        </label>
+        <div class="composer-actions">
+          <button type="button" class="ghost-button" id="composerCancel">Cancel</button>
+          <button type="submit" class="primary-button">Declare Emergency</button>
+        </div>
+      </form>
+    </section>
+  </div>
 
   <script src="./script.js"></script>
 </body>

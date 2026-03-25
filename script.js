@@ -72,6 +72,7 @@ const MAX_CHAOS_STAGE = 9;
 const WORD_CHAOS_STAGE = 4;
 const LETTER_CHAOS_STAGE = 7;
 const GOVERNMENT_STAGE = 9;
+const EMERGENCY_STORAGE_KEY = "department_of_ridiculous_emergencies";
 
 let chaos = 73;
 let chaosStage = 0;
@@ -79,6 +80,7 @@ let discoEnabled = false;
 let trumpetCount = 14;
 let gooseCount = 5;
 let capeCount = 29;
+let citizenEmergencies = [];
 
 const missionTitle = document.getElementById("missionTitle");
 const missionText = document.getElementById("missionText");
@@ -98,6 +100,17 @@ const stickerField = document.getElementById("stickerField");
 const raccoonField = document.getElementById("raccoonField");
 const chaosBtn = document.getElementById("chaosBtn");
 const undoBtn = document.getElementById("undoBtn");
+const missionBtn = document.getElementById("missionBtn");
+const ledgerBtn = document.getElementById("ledgerBtn");
+const composerShell = document.getElementById("composerShell");
+const composerBackdrop = document.getElementById("composerBackdrop");
+const composerClose = document.getElementById("composerClose");
+const composerCancel = document.getElementById("composerCancel");
+const emergencyForm = document.getElementById("emergencyForm");
+const emergencyTitleInput = document.getElementById("emergencyTitleInput");
+const emergencyTextInput = document.getElementById("emergencyTextInput");
+const emergencyList = document.getElementById("emergencyList");
+const emergencyEmpty = document.getElementById("emergencyEmpty");
 
 const chaosTextTargets = Array.from(document.querySelectorAll("[data-chaos-text]"));
 const chaosBoxTargets = Array.from(document.querySelectorAll("[data-chaos-box]"));
@@ -112,6 +125,103 @@ function normalizeWhitespace(text) {
 
 function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
+}
+
+function formatEmergencyTimestamp(isoString) {
+  return new Date(isoString).toLocaleString([], {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+function loadCitizenEmergencies() {
+  try {
+    const raw = window.localStorage.getItem(EMERGENCY_STORAGE_KEY);
+
+    if (!raw) {
+      return [];
+    }
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter((entry) => entry && typeof entry.title === "string" && typeof entry.details === "string" && typeof entry.createdAt === "string");
+  } catch {
+    return [];
+  }
+}
+
+function saveCitizenEmergencies() {
+  try {
+    window.localStorage.setItem(EMERGENCY_STORAGE_KEY, JSON.stringify(citizenEmergencies));
+  } catch {
+    // Best effort only for static hosting environments.
+  }
+}
+
+function renderCitizenEmergencies() {
+  emergencyList.innerHTML = "";
+  emergencyEmpty.hidden = citizenEmergencies.length > 0;
+
+  citizenEmergencies.forEach((entry) => {
+    const card = document.createElement("article");
+    const title = document.createElement("h3");
+    const details = document.createElement("p");
+    const timestamp = document.createElement("div");
+
+    card.className = "ledger-card";
+    title.textContent = entry.title;
+    details.textContent = entry.details;
+    timestamp.className = "ledger-meta";
+    timestamp.textContent = `Filed ${formatEmergencyTimestamp(entry.createdAt)}`;
+
+    card.appendChild(title);
+    card.appendChild(details);
+    card.appendChild(timestamp);
+    emergencyList.appendChild(card);
+  });
+}
+
+function openComposer() {
+  composerShell.classList.remove("hidden");
+  composerShell.setAttribute("aria-hidden", "false");
+  window.setTimeout(() => {
+    emergencyTitleInput.focus();
+  }, 0);
+}
+
+function closeComposer() {
+  composerShell.classList.add("hidden");
+  composerShell.setAttribute("aria-hidden", "true");
+  emergencyForm.reset();
+}
+
+function submitEmergency(event) {
+  event.preventDefault();
+
+  const title = normalizeWhitespace(emergencyTitleInput.value);
+  const details = normalizeWhitespace(emergencyTextInput.value);
+
+  if (!title || !details) {
+    return;
+  }
+
+  citizenEmergencies.unshift({
+    id: `${Date.now()}`,
+    title,
+    details,
+    createdAt: new Date().toISOString(),
+  });
+
+  citizenEmergencies = citizenEmergencies.slice(0, 18);
+  saveCitizenEmergencies();
+  renderCitizenEmergencies();
+  setChaosContent(warningText, `New statewide emergency filed: ${title}. Public confusion expected shortly.`);
+  applyChaosStage();
+  closeComposer();
+  spawnStickerBurst(10);
 }
 
 function setChaosContent(element, text) {
@@ -413,9 +523,7 @@ function undoChaos() {
 }
 
 document.getElementById("missionBtn").addEventListener("click", () => {
-  updateMission();
-  applyChaosStage();
-  spawnStickerBurst(6);
+  openComposer();
 });
 
 document.getElementById("discoBtn").addEventListener("click", () => {
@@ -447,7 +555,21 @@ document.getElementById("shuffleBtn").addEventListener("click", () => {
   spawnStickerBurst(12);
 });
 
+ledgerBtn.addEventListener("click", openComposer);
+composerClose.addEventListener("click", closeComposer);
+composerCancel.addEventListener("click", closeComposer);
+composerBackdrop.addEventListener("click", closeComposer);
+emergencyForm.addEventListener("submit", submitEmergency);
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !composerShell.classList.contains("hidden")) {
+    closeComposer();
+  }
+});
+
 primeChaosTextTargets();
+citizenEmergencies = loadCitizenEmergencies();
+renderCitizenEmergencies();
 updateMission();
 updateChaosUI();
 remixTicker();
