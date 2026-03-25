@@ -73,6 +73,7 @@ const WORD_CHAOS_STAGE = 4;
 const LETTER_CHAOS_STAGE = 7;
 const GOVERNMENT_STAGE = 9;
 const EMERGENCY_STORAGE_KEY = "department_of_ridiculous_emergencies";
+const API_BASE = (document.querySelector('meta[name="ridiculous-api-base"]')?.content || "").trim().replace(/\/$/, "");
 
 let chaos = 73;
 let chaosStage = 0;
@@ -163,6 +164,50 @@ function saveCitizenEmergencies() {
   }
 }
 
+async function fetchSharedEmergencies() {
+  if (!API_BASE) {
+    return null;
+  }
+
+  const response = await fetch(`${API_BASE}/api/emergencies`, {
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to load emergencies: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return Array.isArray(payload.emergencies) ? payload.emergencies : [];
+}
+
+async function createSharedEmergency(entry) {
+  if (!API_BASE) {
+    return null;
+  }
+
+  const response = await fetch(`${API_BASE}/api/emergencies`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      title: entry.title,
+      details: entry.details,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create emergency: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return payload.emergency || null;
+}
+
 function renderCitizenEmergencies() {
   emergencyList.innerHTML = "";
   emergencyEmpty.hidden = citizenEmergencies.length > 0;
@@ -186,6 +231,21 @@ function renderCitizenEmergencies() {
   });
 }
 
+async function syncEmergenciesFromApi() {
+  try {
+    const sharedEmergencies = await fetchSharedEmergencies();
+
+    if (!sharedEmergencies) {
+      return;
+    }
+
+    citizenEmergencies = sharedEmergencies;
+    renderCitizenEmergencies();
+  } catch {
+    // If the tiny backend is unavailable, the site keeps working locally.
+  }
+}
+
 function openComposer() {
   composerShell.classList.remove("hidden");
   composerShell.setAttribute("aria-hidden", "false");
@@ -200,7 +260,7 @@ function closeComposer() {
   emergencyForm.reset();
 }
 
-function submitEmergency(event) {
+async function submitEmergency(event) {
   event.preventDefault();
 
   const title = normalizeWhitespace(emergencyTitleInput.value);
@@ -210,15 +270,29 @@ function submitEmergency(event) {
     return;
   }
 
-  citizenEmergencies.unshift({
+  const nextEntry = {
     id: `${Date.now()}`,
     title,
     details,
     createdAt: new Date().toISOString(),
-  });
+  };
+
+  if (API_BASE) {
+    try {
+      const sharedEntry = await createSharedEmergency(nextEntry);
+      if (sharedEntry) {
+        citizenEmergencies.unshift(sharedEntry);
+      }
+    } catch {
+      citizenEmergencies.unshift(nextEntry);
+      saveCitizenEmergencies();
+    }
+  } else {
+    citizenEmergencies.unshift(nextEntry);
+    saveCitizenEmergencies();
+  }
 
   citizenEmergencies = citizenEmergencies.slice(0, 18);
-  saveCitizenEmergencies();
   renderCitizenEmergencies();
   setChaosContent(warningText, `New statewide emergency filed: ${title}. Public confusion expected shortly.`);
   applyChaosStage();
@@ -633,6 +707,7 @@ window.addEventListener("keydown", (event) => {
 primeChaosTextTargets();
 citizenEmergencies = loadCitizenEmergencies();
 renderCitizenEmergencies();
+syncEmergenciesFromApi();
 updateMission();
 updateChaosUI();
 remixTicker();
