@@ -68,7 +68,13 @@ const risks = [
 
 const stickers = ["🦝", "🪩", "🦆", "🎺", "✨", "🕺", "💥", "🌈", "🍌", "🎈"];
 
+const MAX_CHAOS_STAGE = 9;
+const WORD_CHAOS_STAGE = 4;
+const LETTER_CHAOS_STAGE = 7;
+const GOVERNMENT_STAGE = 9;
+
 let chaos = 73;
+let chaosStage = 0;
 let discoEnabled = false;
 let trumpetCount = 14;
 let gooseCount = 5;
@@ -90,26 +96,191 @@ const capeCountEl = document.getElementById("capeCount");
 const tickerTrack = document.getElementById("tickerTrack");
 const stickerField = document.getElementById("stickerField");
 const raccoonField = document.getElementById("raccoonField");
+const chaosBtn = document.getElementById("chaosBtn");
+const undoBtn = document.getElementById("undoBtn");
+
+const chaosTextTargets = Array.from(document.querySelectorAll("[data-chaos-text]"));
+const chaosBoxTargets = Array.from(document.querySelectorAll("[data-chaos-box]"));
+
+function clamp(min, value, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizeWhitespace(text) {
+  return text.replace(/\s+/g, " ").trim();
+}
 
 function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function setChaosContent(element, text) {
+  const normalized = normalizeWhitespace(text);
+  element.dataset.sourceText = normalized;
+  element.textContent = normalized;
+}
+
+function primeChaosTextTargets() {
+  chaosTextTargets.forEach((element) => {
+    const normalized = normalizeWhitespace(element.textContent);
+    element.dataset.sourceText = normalized;
+    element.textContent = normalized;
+  });
+}
+
+function seededFactor(seed, stage, spread, min, max) {
+  const raw =
+    1
+    + Math.sin(seed * 1.37 + stage * 0.91) * spread
+    + Math.cos(seed * 0.73 - stage * 0.49) * (spread * 0.65);
+  return clamp(min, raw, max);
+}
+
+function renderElementChaos(element, sourceText, index) {
+  const fragment = document.createElement("span");
+  const factor = seededFactor(index + 1, chaosStage, 0.13 + chaosStage * 0.04, 0.62, 1.6);
+
+  fragment.className = "chaos-element-fragment";
+  fragment.textContent = sourceText;
+  fragment.style.fontSize = `${factor}em`;
+  fragment.style.transform = `translateY(${Math.sin(index + chaosStage) * 4}px)`;
+  fragment.style.letterSpacing = `${Math.sin(index * 0.6 + chaosStage) * 0.03}em`;
+
+  element.appendChild(fragment);
+}
+
+function renderWordChaos(element, sourceText, index) {
+  const tokens = sourceText.split(/(\s+)/);
+
+  tokens.forEach((token, tokenIndex) => {
+    if (/\s+/.test(token)) {
+      element.appendChild(document.createTextNode(token));
+      return;
+    }
+
+    const fragment = document.createElement("span");
+    const factor = seededFactor((index + 1) * 9 + tokenIndex, chaosStage, 0.2 + (chaosStage - 3) * 0.04, 0.45, 1.95);
+    const nudge = Math.sin(tokenIndex * 1.4 + chaosStage) * 6;
+    const rotation = Math.cos(tokenIndex + chaosStage) * 3;
+
+    fragment.className = "word-fragment";
+    fragment.textContent = token;
+    fragment.style.fontSize = `${factor}em`;
+    fragment.style.transform = `translateY(${nudge}px) rotate(${rotation}deg)`;
+
+    element.appendChild(fragment);
+  });
+}
+
+function renderLetterChaos(element, sourceText, index) {
+  const tokens = sourceText.split(/(\s+)/);
+
+  tokens.forEach((token, tokenIndex) => {
+    if (/\s+/.test(token)) {
+      element.appendChild(document.createTextNode(token));
+      return;
+    }
+
+    [...token].forEach((character, charIndex) => {
+      const fragment = document.createElement("span");
+      const seed = (index + 1) * 17 + tokenIndex * 5 + charIndex;
+      const factor = seededFactor(seed, chaosStage, 0.24 + (chaosStage - 6) * 0.06, 0.32, 2.25);
+      const nudge = Math.sin(seed + chaosStage) * 8;
+      const rotation = Math.cos(seed * 0.4 + chaosStage) * 6;
+
+      fragment.className = "letter-fragment";
+      fragment.textContent = character;
+      fragment.style.fontSize = `${factor}em`;
+      fragment.style.transform = `translateY(${nudge}px) rotate(${rotation}deg)`;
+
+      element.appendChild(fragment);
+    });
+  });
+}
+
+function renderChaosTextTarget(element, index) {
+  const sourceText = element.dataset.sourceText || normalizeWhitespace(element.textContent);
+
+  element.textContent = "";
+
+  if (chaosStage === 0 || chaosStage >= GOVERNMENT_STAGE) {
+    element.textContent = sourceText;
+    return;
+  }
+
+  if (chaosStage < WORD_CHAOS_STAGE) {
+    renderElementChaos(element, sourceText, index);
+    return;
+  }
+
+  if (chaosStage < LETTER_CHAOS_STAGE) {
+    renderWordChaos(element, sourceText, index);
+    return;
+  }
+
+  renderLetterChaos(element, sourceText, index);
+}
+
+function applyBoxChaos() {
+  chaosBoxTargets.forEach((element, index) => {
+    if (chaosStage === 0 || chaosStage >= GOVERNMENT_STAGE) {
+      element.style.transform = "";
+      element.style.opacity = "";
+      element.style.filter = "";
+      return;
+    }
+
+    const activeStage = Math.min(chaosStage, 3);
+    const scale = seededFactor(index + 3, activeStage, 0.035 * activeStage, 0.9, 1.16);
+    const rotation = Math.sin(index + activeStage * 0.7) * activeStage * 1.5;
+    const nudgeX = Math.cos(index * 0.8 + activeStage) * activeStage * 4;
+    const nudgeY = Math.sin(index * 0.6 + activeStage) * activeStage * 5;
+
+    element.style.transform = `translate(${nudgeX}px, ${nudgeY}px) rotate(${rotation}deg) scale(${scale})`;
+    element.style.opacity = `${1 - Math.min(0.12, chaosStage * 0.01)}`;
+    element.style.filter = `saturate(${1 + activeStage * 0.08})`;
+  });
+}
+
+function applyChaosStage() {
+  document.body.classList.toggle("government-mode", chaosStage >= GOVERNMENT_STAGE);
+  undoBtn.disabled = chaosStage === 0;
+  chaosBtn.textContent = chaosStage >= GOVERNMENT_STAGE
+    ? "Further Increase Pending Review"
+    : "Increase Chaos";
+  undoBtn.textContent = chaosStage >= GOVERNMENT_STAGE
+    ? "Undo Bureaucracy"
+    : "Undo Chaos";
+
+  chaosTextTargets.forEach((element, index) => {
+    renderChaosTextTarget(element, index);
+  });
+
+  applyBoxChaos();
+}
+
 function updateMission() {
   const mission = pickRandom(missions);
-  missionTitle.textContent = mission.title;
-  missionText.textContent = mission.text;
-  missionUrgency.textContent = mission.urgency;
-  missionAgency.textContent = mission.agency;
-  hotlineText.textContent = pickRandom(hotlineScripts);
-  warningText.textContent = pickRandom(warnings);
+
+  setChaosContent(missionTitle, mission.title);
+  setChaosContent(missionText, mission.text);
+  setChaosContent(missionUrgency, mission.urgency);
+  setChaosContent(missionAgency, mission.agency);
+  setChaosContent(hotlineText, pickRandom(hotlineScripts));
+  setChaosContent(warningText, pickRandom(warnings));
 }
 
 function updateChaosUI() {
   chaosValue.textContent = `${chaos}%`;
   chaosBar.style.width = `${chaos}%`;
-  riskLabel.textContent = risks[Math.min(risks.length - 1, Math.floor(chaos / 20))];
-  vibeLabel.textContent = pickRandom(vibes);
+
+  if (chaosStage >= GOVERNMENT_STAGE) {
+    setChaosContent(riskLabel, "Treasury-grade beige");
+    setChaosContent(vibeLabel, "Form 14-B calm");
+  } else {
+    setChaosContent(riskLabel, risks[Math.min(risks.length - 1, Math.floor(chaos / 20))]);
+    setChaosContent(vibeLabel, pickRandom(vibes));
+  }
 
   const tilt = `${(chaos - 50) / 18}deg`;
   const scale = Math.min(1.14, 1 + chaos / 500);
@@ -132,9 +303,20 @@ function inflateMetrics(multiplier = 1) {
   animateMetric(capeCountEl, capeCount);
 }
 
+function deflateMetrics(multiplier = 1) {
+  trumpetCount = Math.max(8, trumpetCount - multiplier);
+  gooseCount = Math.max(2, gooseCount - Math.max(1, Math.round(Math.random() * multiplier)));
+  capeCount = Math.max(15, capeCount - 2 * multiplier);
+
+  animateMetric(trumpetCountEl, trumpetCount);
+  animateMetric(gooseCountEl, gooseCount);
+  animateMetric(capeCountEl, capeCount);
+}
+
 function spawnStickerBurst(amount = 10) {
   for (let index = 0; index < amount; index += 1) {
     const sticker = document.createElement("div");
+
     sticker.className = "sticker";
     sticker.textContent = pickRandom(stickers);
     sticker.style.left = `${Math.random() * 100}%`;
@@ -189,6 +371,7 @@ function releaseRaccoons(amount = 7) {
 function remixTicker() {
   const items = [...tickerItems, ...warnings, ...hotlineScripts];
   const chosen = Array.from({ length: 8 }, () => pickRandom(items));
+
   tickerTrack.innerHTML = "";
 
   chosen.concat(chosen).forEach((item) => {
@@ -199,14 +382,39 @@ function remixTicker() {
 }
 
 function increaseChaos() {
+  chaosStage = Math.min(MAX_CHAOS_STAGE, chaosStage + 1);
   chaos = Math.min(100, chaos + 7);
+
+  if (chaosStage >= GOVERNMENT_STAGE) {
+    setChaosContent(warningText, "Visual enrichment has exceeded acceptable thresholds. This page has been remediated into a compliant information resource.");
+  }
+
   updateChaosUI();
+  applyChaosStage();
   inflateMetrics(2);
   spawnStickerBurst(8);
 }
 
+function undoChaos() {
+  if (chaosStage === 0) {
+    return;
+  }
+
+  chaosStage = Math.max(0, chaosStage - 1);
+  chaos = Math.max(45, chaos - 7);
+
+  if (chaosStage < GOVERNMENT_STAGE) {
+    setChaosContent(warningText, pickRandom(warnings));
+  }
+
+  updateChaosUI();
+  applyChaosStage();
+  deflateMetrics(1);
+}
+
 document.getElementById("missionBtn").addEventListener("click", () => {
   updateMission();
+  applyChaosStage();
   spawnStickerBurst(6);
 });
 
@@ -216,25 +424,31 @@ document.getElementById("discoBtn").addEventListener("click", () => {
   spawnStickerBurst(discoEnabled ? 14 : 6);
 });
 
-document.getElementById("chaosBtn").addEventListener("click", increaseChaos);
+chaosBtn.addEventListener("click", increaseChaos);
+undoBtn.addEventListener("click", undoChaos);
 
 document.getElementById("raccoonBtn").addEventListener("click", () => {
   gooseCount += 3;
   inflateMetrics(1);
-  warningText.textContent = "Raccoons released successfully. Nobody is in charge anymore.";
+  setChaosContent(warningText, "Raccoons released successfully. Nobody is in charge anymore.");
+  applyChaosStage();
   releaseRaccoons(9);
   spawnStickerBurst(16);
 });
 
 document.getElementById("shuffleBtn").addEventListener("click", () => {
   chaos = 48 + Math.floor(Math.random() * 53);
+  chaosStage = clamp(0, Math.floor((chaos - 48) / 6), MAX_CHAOS_STAGE);
   updateMission();
   remixTicker();
   updateChaosUI();
+  applyChaosStage();
   inflateMetrics(3);
   spawnStickerBurst(12);
 });
 
+primeChaosTextTargets();
 updateMission();
 updateChaosUI();
 remixTicker();
+applyChaosStage();

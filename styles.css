@@ -38,6 +38,19 @@ body.disco {
   animation: bodyPulse 7s linear infinite;
 }
 
+body.government-mode {
+  background: #ffffff;
+  color: #000000;
+  font-family: "Times New Roman", Times, serif;
+}
+
+body.government-mode .noise,
+body.government-mode .orb,
+body.government-mode .sticker-field,
+body.government-mode .raccoon-field {
+  display: none;
+}
+
 .noise {
   position: fixed;
   inset: 0;
@@ -92,6 +105,17 @@ body.disco {
 
 .hero-copy {
   max-width: 52rem;
+}
+
+[data-chaos-box] {
+  transition:
+    transform 260ms ease,
+    opacity 260ms ease,
+    filter 260ms ease,
+    background-color 260ms ease,
+    border-color 260ms ease,
+    box-shadow 260ms ease;
+  transform-origin: center;
 }
 
 .eyebrow,
@@ -365,6 +389,15 @@ button {
   background: #fff8ef;
 }
 
+.loud-button.undo {
+  background: rgba(20, 33, 61, 0.08);
+}
+
+.loud-button:disabled {
+  cursor: default;
+  opacity: 0.48;
+}
+
 .loud-button.alt {
   background: var(--cyan);
 }
@@ -484,6 +517,26 @@ button {
   background: rgba(20, 33, 61, 0.78);
   color: #fff8ef;
   border-color: rgba(255, 255, 255, 0.12);
+}
+
+.chaos-element-fragment,
+.word-fragment,
+.letter-fragment {
+  display: inline-block;
+  transition:
+    font-size 220ms ease,
+    transform 220ms ease,
+    letter-spacing 220ms ease,
+    color 220ms ease;
+}
+
+.word-fragment,
+.letter-fragment {
+  transform-origin: center bottom;
+}
+
+.letter-fragment {
+  min-width: 0.18em;
 }
 
 .manifesto h2 {
@@ -618,6 +671,137 @@ button {
   50% {
     filter: hue-rotate(22deg) saturate(1.14);
   }
+}
+
+body.government-mode *,
+body.government-mode *::before,
+body.government-mode *::after {
+  animation: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  backdrop-filter: none !important;
+}
+
+body.government-mode .hero,
+body.government-mode .page-shell {
+  padding: 1rem 1.25rem;
+}
+
+body.government-mode .hero,
+body.government-mode .command-center,
+body.government-mode .cabinet-grid,
+body.government-mode .status-grid {
+  display: block;
+}
+
+body.government-mode .hero-copy,
+body.government-mode .status-panel,
+body.government-mode .panel,
+body.government-mode .cabinet-card,
+body.government-mode .manifesto,
+body.government-mode .annex-card {
+  max-width: none;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid #8c8c8c;
+}
+
+body.government-mode .status-grid > div {
+  margin-bottom: 0.7rem;
+}
+
+body.government-mode h1,
+body.government-mode h2,
+body.government-mode h3,
+body.government-mode .status-value,
+body.government-mode .metric-list strong {
+  max-width: none;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 2rem;
+  line-height: 1.2;
+  transform: none !important;
+}
+
+body.government-mode .lede,
+body.government-mode .cabinet-card p,
+body.government-mode .manifesto p,
+body.government-mode .annex-card p,
+body.government-mode .panel-note,
+body.government-mode .status-label,
+body.government-mode .status-grid dt,
+body.government-mode .status-grid dd {
+  color: #000000;
+}
+
+body.government-mode .status-bar {
+  height: 0.7rem;
+  background: #d8d8d8;
+}
+
+body.government-mode .status-bar span {
+  background: #6f6f6f;
+}
+
+body.government-mode .hero-actions,
+body.government-mode .control-stack,
+body.government-mode .mission-meta {
+  display: block;
+}
+
+body.government-mode .primary-button,
+body.government-mode .ghost-button,
+body.government-mode .loud-button,
+body.government-mode .mission-meta span {
+  display: inline-block;
+  width: auto;
+  margin: 0 0 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #e5e5e5;
+  color: #000000;
+  border: 1px solid #8c8c8c;
+}
+
+body.government-mode a {
+  color: #0000ee;
+}
+
+body.government-mode .ticker-wrap {
+  background: transparent;
+  color: #000000;
+  border: 1px solid #8c8c8c;
+  margin: 0 1.25rem 1rem;
+}
+
+body.government-mode .ticker-track {
+  display: block;
+  width: auto;
+  padding: 0.8rem 1rem;
+  animation: none;
+  white-space: normal;
+}
+
+body.government-mode .ticker-track span {
+  display: list-item;
+  margin: 0 0 0.35rem 1.25rem;
+}
+
+body.government-mode .ticker-track span::before,
+body.government-mode .cabinet-card::after {
+  content: none;
+}
+
+body.government-mode .metric-list li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+body.government-mode .annex-card .panel-kicker,
+body.government-mode .annex-card p {
+  color: #000000;
 }
 
 @media (max-width: 960px) {
