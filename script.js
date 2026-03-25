@@ -6,21 +6,21 @@ const missions = [
     agency: "Issued by: Bureau of Loud Carpets",
   },
   {
-    title: "Negotiate a peace treaty between espresso and bedtime.",
-    text: "Bring charts, a velvet chair, and one witness willing to describe the moon as a stakeholder.",
-    urgency: "Urgency: Caffeinated",
-    agency: "Issued by: Ministry of Late Decisions",
+    title: "Reassure the public after the canal-blocking cargo ship of destiny has struck again.",
+    text: "Bring a pointer, a crisis blazer, and several slides explaining why global logistics now depend on one stubborn boat and a very apologetic seagull.",
+    urgency: "Urgency: Containerized",
+    agency: "Issued by: Ministry of Sideways Shipping",
   },
   {
-    title: "Audit the nation's emergency kazoo reserves.",
-    text: "If any ceremonial kazoos are out of tune, file a respectful but flamboyant incident report.",
-    urgency: "Urgency: Toot-based",
-    agency: "Issued by: Office of Brass Feelings",
+    title: "Audit the emergency meme-stock morale desk before the opening bell.",
+    text: "If enthusiasm exceeds fundamentals by more than three jazz hands, halt trading, mist the room with lavender, and ask everyone to stop calling themselves visionaries.",
+    urgency: "Urgency: Gamma-ish",
+    agency: "Issued by: Office of Retail Sentiment",
   },
   {
-    title: "Train the disco pigeon for a state visit.",
-    text: "Feathers should shimmer, diplomacy should dazzle, and nobody should ask where the tiny sunglasses came from.",
-    urgency: "Urgency: Feather-critical",
+    title: "Prepare a statement for the balloon incident while keeping the disco pigeon off camera.",
+    text: "Feathers should shimmer, spokespeople should stay hydrated, and nobody should mention that the briefing notes were written on the back of a brunch menu.",
+    urgency: "Urgency: Airspace-adjacent",
     agency: "Issued by: Embassy of Immaculate Swagger",
   },
 ];
@@ -28,24 +28,26 @@ const missions = [
 const hotlineScripts = [
   "\"Thank you for calling. If your staircase is becoming emotionally distant, please stay on the line.\"",
   "\"For unexpected jazz hands in your neighborhood, press 4 and face east with confidence.\"",
-  "\"If your soup has begun offering financial advice, do not interrupt. Document everything.\"",
-  "\"All agents are currently assisting other emergencies involving sequins, fog, and avoidable fanfare.\"",
+  "\"If your soup has begun offering financial advice during a regional banking wobble, do not interrupt. Document everything.\"",
+  "\"All agents are currently assisting other emergencies involving sequins, fog, avoidable fanfare, and one incredibly compromised supply chain.\"",
 ];
 
 const warnings = [
   "Please remain calm if your inbox begins humming show tunes.",
   "A parade may form around you with very little notice. Hydrate accordingly.",
-  "Citizens are advised not to challenge the decorative curtains to a duel.",
-  "Do not feed strategic glitter to any unlicensed motivational speakers.",
+  "Citizens are advised not to challenge the decorative curtains to a duel during periods of elevated meme-stock enthusiasm.",
+  "Do not feed strategic glitter to any unlicensed motivational speakers, crisis podcasters, or canal traffic analysts.",
+  "If a single vessel blocks global commerce again, please clap supportively and reroute with dignity.",
 ];
 
 const tickerItems = [
   "BREAKING: A tactical pastry has entered the decision-making process.",
   "NOTICE: The escalator now believes in destiny.",
   "ALERT: Eight suspiciously glamorous geese have formed a committee.",
-  "URGENT: The ceremonial saxophone refuses to be rushed.",
-  "LIVE: Someone has replaced the minutes with interpretive dance notes.",
-  "UPDATE: National morale up 6% after introduction of victory capes.",
+  "URGENT: The ceremonial saxophone refuses to be rushed during the latest inflation panic.",
+  "LIVE: Someone has replaced the minutes with interpretive dance notes and a risk disclosure.",
+  "UPDATE: National morale up 6% after introduction of victory capes and post-canal contingency planning.",
+  "FLASH: Balloon-watch desk requests calmer fonts and fewer lasers.",
 ];
 
 const vibes = [
@@ -57,11 +59,11 @@ const vibes = [
 ];
 
 const risks = [
-  "Mildly theatrical",
-  "Vividly unnecessary",
-  "Operationally chaotic",
-  "Legally flamboyant",
-  "Heroically overcommitted",
+  "Low-float nonsense",
+  "Leveraged pageantry",
+  "Volatility with jazz hands",
+  "Mark-to-manic",
+  "Systemically fabulous",
 ];
 
 const stickers = ["🦝", "🪩", "🦆", "🎺", "✨", "🕺", "💥", "🌈", "🍌", "🎈"];
