@@ -87,6 +87,7 @@ const gooseCountEl = document.getElementById("gooseCount");
 const capeCountEl = document.getElementById("capeCount");
 const tickerTrack = document.getElementById("tickerTrack");
 const stickerField = document.getElementById("stickerField");
+const raccoonField = document.getElementById("raccoonField");
 
 function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -146,6 +147,43 @@ function spawnStickerBurst(amount = 10) {
   }
 }
 
+function releaseRaccoons(amount = 7) {
+  const raccoonTitles = [
+    "snack inspector",
+    "trash marshal",
+    "velvet bandit",
+    "night mayor",
+    "glitter deputy",
+    "committee chair",
+  ];
+
+  for (let index = 0; index < amount; index += 1) {
+    const raccoon = document.createElement("div");
+    const face = document.createElement("span");
+    const tag = document.createElement("span");
+
+    raccoon.className = "raccoon";
+    raccoon.style.setProperty("--lane", `${6 + Math.random() * 72}vh`);
+    raccoon.style.setProperty("--run-duration", `${4.5 + Math.random() * 2.5}s`);
+    raccoon.style.setProperty("--raccoon-scale", `${0.88 + Math.random() * 0.42}`);
+    raccoon.style.animationDelay = `${index * 0.16}s`;
+
+    face.className = "raccoon-face";
+    face.textContent = "🦝";
+
+    tag.className = "raccoon-tag";
+    tag.textContent = pickRandom(raccoonTitles);
+
+    raccoon.appendChild(face);
+    raccoon.appendChild(tag);
+    raccoonField.appendChild(raccoon);
+
+    window.setTimeout(() => {
+      raccoon.remove();
+    }, 7600);
+  }
+}
+
 function remixTicker() {
   const items = [...tickerItems, ...warnings, ...hotlineScripts];
   const chosen = Array.from({ length: 8 }, () => pickRandom(items));
@@ -182,6 +220,7 @@ document.getElementById("raccoonBtn").addEventListener("click", () => {
   gooseCount += 3;
   inflateMetrics(1);
   warningText.textContent = "Raccoons released successfully. Nobody is in charge anymore.";
+  releaseRaccoons(9);
   spawnStickerBurst(16);
 });
 
