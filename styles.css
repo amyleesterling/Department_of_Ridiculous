@@ -179,8 +179,12 @@ button {
 
 .primary-button,
 .ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 1rem 1.45rem;
   font-weight: 700;
+  text-decoration: none;
 }
 
 .primary-button {
@@ -447,6 +451,39 @@ button {
 .manifesto {
   margin-top: 1.25rem;
   padding: 1.5rem;
+}
+
+.annex-card {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.7rem;
+  backdrop-filter: blur(16px);
+  background:
+    linear-gradient(135deg, rgba(20, 33, 61, 0.92), rgba(65, 36, 122, 0.82));
+  color: #fff8ef;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow);
+}
+
+.annex-card .panel-kicker,
+.annex-card p {
+  color: rgba(255, 248, 239, 0.8);
+}
+
+.annex-card h2 {
+  max-width: 14ch;
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 0.9rem;
+}
+
+.annex-link {
+  margin-top: 1.25rem;
+}
+
+.page-link {
+  background: rgba(20, 33, 61, 0.78);
+  color: #fff8ef;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .manifesto h2 {
