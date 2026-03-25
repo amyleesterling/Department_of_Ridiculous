@@ -5,12 +5,12 @@ An aggressively unnecessary website featuring absurd emergencies, disco toggles,
 ## Live Site
 
 - Homepage: https://amyleesterling.github.io/Department_of_Ridiculous/
-- Parade Annex: https://amyleesterling.github.io/Department_of_Ridiculous/react-2/
+- Department of Nothing: https://amyleesterling.github.io/Department_of_Ridiculous/react-2/
 
 ## Pages
 
 - `index.html` is the original Department of Ridiculous Internet homepage.
-- `react-2/index.html` is the React-powered Parade Annex page for GitHub Pages.
+- `react-2/index.html` is the React-powered Department of Nothing page for GitHub Pages.
 
 ## Run
 
