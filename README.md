@@ -2,6 +2,11 @@
 
 An aggressively unnecessary website featuring absurd emergencies, disco toggles, heroic typography, and a government-grade commitment to nonsense.
 
+## Live Site
+
+- Homepage: https://amyleesterling.github.io/Department_of_Ridiculous/
+- Parade Annex: https://amyleesterling.github.io/Department_of_Ridiculous/react-2/
+
 ## Pages
 
 - `index.html` is the original Department of Ridiculous Internet homepage.
