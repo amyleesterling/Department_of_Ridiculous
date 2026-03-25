@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Department of Ridiculous Internet</title>
+  <meta
+    name="description"
+    content="An aggressively unnecessary website featuring absurd emergencies, disco toggles, and elite nonsense."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-one" aria-hidden="true"></div>
+  <div class="orb orb-two" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Officially unqualified since 2026</p>
+      <h1>THE DEPARTMENT OF RIDICULOUS INTERNET</h1>
+      <p class="lede">
+        A fully operational digital ministry dedicated to emergency pageantry,
+        preventable confetti, and decisions made with unearned confidence.
+      </p>
+      <div class="hero-actions">
+        <button class="primary-button" id="missionBtn">Issue New Emergency</button>
+        <button class="ghost-button" id="discoBtn">Activate Disco Protocol</button>
+      </div>
+    </div>
+
+    <aside class="status-panel">
+      <div class="status-label">Silliness Index</div>
+      <div class="status-value" id="chaosValue">73%</div>
+      <div class="status-bar">
+        <span id="chaosBar"></span>
+      </div>
+      <dl class="status-grid">
+        <div>
+          <dt>Risk Level</dt>
+          <dd id="riskLabel">Mildly theatrical</dd>
+        </div>
+        <div>
+          <dt>Current Vibe</dt>
+          <dd id="vibeLabel">Velvet panic</dd>
+        </div>
+        <div>
+          <dt>National Bird</dt>
+          <dd>Disco pigeon</dd>
+        </div>
+        <div>
+          <dt>Preparedness</dt>
+          <dd>Emotionally dubious</dd>
+        </div>
+      </dl>
+    </aside>
+  </header>
+
+  <main class="page-shell">
+    <section class="ticker-wrap" aria-label="Live absurdity alerts">
+      <div class="ticker-track" id="tickerTrack">
+        <span>BREAKING: The moon has requested a sequined parking permit.</span>
+        <span>NOTICE: All sandwiches must now declare their emotional support fillings.</span>
+        <span>ALERT: A raccoon in sunglasses has been promoted without explanation.</span>
+        <span>URGENT: Confidence remains high despite evidence continuing to exist.</span>
+      </div>
+    </section>
+
+    <section class="command-center">
+      <div class="panel mission-panel">
+        <p class="panel-kicker">Today's absurd assignment</p>
+        <h2 id="missionTitle">Escort the ceremonial fog machine to parliament.</h2>
+        <p id="missionText">
+          Your responsibilities include announcing everyone's dramatic entrance
+          and protecting the glitter budget from practical people.
+        </p>
+        <div class="mission-meta">
+          <span id="missionUrgency">Urgency: Sparkly</span>
+          <span id="missionAgency">Issued by: Bureau of Loud Carpets</span>
+        </div>
+      </div>
+
+      <div class="panel controls-panel">
+        <p class="panel-kicker">Approved controls</p>
+        <div class="control-stack">
+          <button class="loud-button" id="chaosBtn">Increase Chaos</button>
+          <button class="loud-button alt" id="raccoonBtn">Release Raccoons</button>
+          <button class="loud-button outline" id="shuffleBtn">Remix Reality</button>
+        </div>
+        <p class="panel-note">
+          This dashboard has not been peer reviewed, spiritually reviewed, or
+          reviewed by anybody with strong boundaries.
+        </p>
+      </div>
+    </section>
+
+    <section class="cabinet-grid">
+      <article class="cabinet-card">
+        <p class="panel-kicker">Nonsense generator</p>
+        <h3>Hotline Script</h3>
+        <p id="hotlineText">
+          "Thank you for calling. If you are experiencing normal weather, press
+          7 to upgrade to dramatic weather."
+        </p>
+      </article>
+
+      <article class="cabinet-card">
+        <p class="panel-kicker">Public advisory</p>
+        <h3>Official warning</h3>
+        <p id="warningText">
+          Please remain calm if your inbox begins humming show tunes.
+        </p>
+      </article>
+
+      <article class="cabinet-card tall">
+        <p class="panel-kicker">Decorative accountability</p>
+        <h3>Ridiculous metrics</h3>
+        <ul class="metric-list">
+          <li><span>Portable trumpets deployed</span><strong id="trumpetCount">14</strong></li>
+          <li><span>Laser geese consulted</span><strong id="gooseCount">5</strong></li>
+          <li><span>Emergency capes ironed</span><strong id="capeCount">29</strong></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="manifesto">
+      <p class="panel-kicker">Institutional philosophy</p>
+      <h2>We reject minimalism in favor of heroic overreaction.</h2>
+      <p>
+        If a website can whisper, ours should sing through a megaphone while
+        roller skating through a curtain of gold streamers.
+      </p>
+    </section>
+  </main>
+
+  <div id="stickerField" class="sticker-field" aria-hidden="true"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
