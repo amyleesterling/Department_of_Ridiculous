@@ -38,6 +38,72 @@ body.disco {
   animation: bodyPulse 7s linear infinite;
 }
 
+body.disco-active {
+  background:
+    radial-gradient(circle at top, rgba(111, 0, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 20% 20%, rgba(0, 255, 240, 0.12), transparent 24%),
+    linear-gradient(180deg, #090912 0%, #12122a 55%, #1c1230 100%);
+  color: #f7f6ff;
+  transition: background 260ms ease, color 260ms ease;
+}
+
+body.disco-active .noise {
+  opacity: 0.14;
+}
+
+body.disco-active .orb {
+  opacity: 0.22;
+}
+
+body.disco-active .status-panel,
+body.disco-active .panel,
+body.disco-active .cabinet-card,
+body.disco-active .manifesto,
+body.disco-active .emergency-ledger,
+body.disco-active .annex-card {
+  background: rgba(16, 17, 38, 0.76);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f7f6ff;
+}
+
+body.disco-active .lede,
+body.disco-active .cabinet-card p,
+body.disco-active .manifesto p,
+body.disco-active .annex-card p,
+body.disco-active .ledger-card p,
+body.disco-active .ledger-empty,
+body.disco-active .status-label,
+body.disco-active .status-grid dt,
+body.disco-active .panel-kicker,
+body.disco-active .panel-note {
+  color: rgba(247, 246, 255, 0.78);
+}
+
+body.disco-active .status-grid dd,
+body.disco-active .ledger-card h3,
+body.disco-active .status-value,
+body.disco-active h1,
+body.disco-active h2,
+body.disco-active h3 {
+  color: #ffffff;
+}
+
+body.disco-active .status-bar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.disco-active .ghost-button,
+body.disco-active .loud-button.outline,
+body.disco-active .ledger-button {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+body.disco-active .loud-button {
+  color: #141625;
+}
+
 body.government-mode {
   background: #ffffff;
   color: #000000;
@@ -47,7 +113,8 @@ body.government-mode {
 body.government-mode .noise,
 body.government-mode .orb,
 body.government-mode .sticker-field,
-body.government-mode .raccoon-field {
+body.government-mode .raccoon-field,
+body.government-mode .disco-shell {
   display: none;
 }
 
@@ -772,6 +839,85 @@ button {
   font-weight: 500;
 }
 
+.disco-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.disco-shell.hidden {
+  display: none;
+}
+
+.disco-shadow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 22%),
+    rgba(3, 3, 12, 0.42);
+}
+
+.disco-rig {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.35rem;
+  height: 7rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.16));
+  transform: translateX(-50%);
+}
+
+.disco-ball {
+  position: absolute;
+  top: -9rem;
+  left: 50%;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.18) 35%, rgba(255, 255, 255, 0.04) 60%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 7px, transparent 7px 14px),
+    linear-gradient(145deg, #d6deff 0%, #b6c2ff 25%, #f7b8ff 50%, #9af8ff 75%, #ffffff 100%);
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.28),
+    0 0 90px rgba(160, 160, 255, 0.18);
+  animation:
+    discoDrop 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    discoSpin 1.2s linear infinite;
+}
+
+.disco-light {
+  position: absolute;
+  top: 6.5rem;
+  left: 50%;
+  width: 18rem;
+  height: 120vh;
+  transform-origin: top center;
+  opacity: 0.54;
+  mix-blend-mode: screen;
+  filter: blur(2px);
+  clip-path: polygon(47% 0, 53% 0, 100% 100%, 0 100%);
+}
+
+.disco-light-left {
+  background: linear-gradient(180deg, rgba(0, 255, 247, 0.6), rgba(0, 255, 247, 0));
+  animation: discoSweepLeft 1.7s ease-in-out infinite alternate;
+}
+
+.disco-light-center {
+  background: linear-gradient(180deg, rgba(255, 248, 111, 0.58), rgba(255, 248, 111, 0));
+  animation: discoSweepCenter 1.3s ease-in-out infinite alternate;
+}
+
+.disco-light-right {
+  background: linear-gradient(180deg, rgba(255, 84, 184, 0.56), rgba(255, 84, 184, 0));
+  animation: discoSweepRight 1.9s ease-in-out infinite alternate;
+}
+
 @keyframes tickerMove {
   from {
     transform: translateX(0);
@@ -836,6 +982,54 @@ button {
   }
   50% {
     filter: hue-rotate(22deg) saturate(1.14);
+  }
+}
+
+@keyframes discoDrop {
+  0% {
+    top: -9rem;
+  }
+  75% {
+    top: 5.2rem;
+  }
+  100% {
+    top: 4.6rem;
+  }
+}
+
+@keyframes discoSpin {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@keyframes discoSweepLeft {
+  from {
+    transform: translateX(-50%) rotate(-46deg) scaleY(1);
+  }
+  to {
+    transform: translateX(-50%) rotate(-12deg) scaleY(1.08);
+  }
+}
+
+@keyframes discoSweepCenter {
+  from {
+    transform: translateX(-50%) rotate(-6deg) scaleY(0.96);
+  }
+  to {
+    transform: translateX(-50%) rotate(10deg) scaleY(1.08);
+  }
+}
+
+@keyframes discoSweepRight {
+  from {
+    transform: translateX(-50%) rotate(18deg) scaleY(1);
+  }
+  to {
+    transform: translateX(-50%) rotate(48deg) scaleY(1.08);
   }
 }
 

@@ -76,11 +76,11 @@ const EMERGENCY_STORAGE_KEY = "department_of_ridiculous_emergencies";
 
 let chaos = 73;
 let chaosStage = 0;
-let discoEnabled = false;
 let trumpetCount = 14;
 let gooseCount = 5;
 let capeCount = 29;
 let citizenEmergencies = [];
+let discoTimeoutId = null;
 
 const missionTitle = document.getElementById("missionTitle");
 const missionText = document.getElementById("missionText");
@@ -111,6 +111,7 @@ const emergencyTitleInput = document.getElementById("emergencyTitleInput");
 const emergencyTextInput = document.getElementById("emergencyTextInput");
 const emergencyList = document.getElementById("emergencyList");
 const emergencyEmpty = document.getElementById("emergencyEmpty");
+const discoShell = document.getElementById("discoShell");
 
 const chaosTextTargets = Array.from(document.querySelectorAll("[data-chaos-text]"));
 const chaosBoxTargets = Array.from(document.querySelectorAll("[data-chaos-box]"));
@@ -222,6 +223,29 @@ function submitEmergency(event) {
   applyChaosStage();
   closeComposer();
   spawnStickerBurst(10);
+}
+
+function stopDiscoProtocol() {
+  document.body.classList.remove("disco-active");
+  discoShell.classList.add("hidden");
+  discoShell.setAttribute("aria-hidden", "true");
+
+  if (discoTimeoutId) {
+    window.clearTimeout(discoTimeoutId);
+    discoTimeoutId = null;
+  }
+}
+
+function startDiscoProtocol() {
+  stopDiscoProtocol();
+  document.body.classList.add("disco-active");
+  discoShell.classList.remove("hidden");
+  discoShell.setAttribute("aria-hidden", "false");
+  spawnStickerBurst(18);
+
+  discoTimeoutId = window.setTimeout(() => {
+    stopDiscoProtocol();
+  }, 6000);
 }
 
 function setChaosContent(element, text) {
@@ -526,11 +550,7 @@ document.getElementById("missionBtn").addEventListener("click", () => {
   openComposer();
 });
 
-document.getElementById("discoBtn").addEventListener("click", () => {
-  discoEnabled = !discoEnabled;
-  document.body.classList.toggle("disco", discoEnabled);
-  spawnStickerBurst(discoEnabled ? 14 : 6);
-});
+document.getElementById("discoBtn").addEventListener("click", startDiscoProtocol);
 
 chaosBtn.addEventListener("click", increaseChaos);
 undoBtn.addEventListener("click", undoChaos);
