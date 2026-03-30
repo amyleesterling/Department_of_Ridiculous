@@ -3,39 +3,95 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import Database from "better-sqlite3";
 import express from "express";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDir = path.join(__dirname, "data");
-const dbPath = path.join(dataDir, "ridiculous-emergencies.db");
 
-fs.mkdirSync(dataDir, { recursive: true });
+/* ------------------------------------------------------------------ */
+/*  Database – Turso (libSQL) for production, better-sqlite3 for local */
+/* ------------------------------------------------------------------ */
 
-const db = new Database(dbPath);
-db.pragma("journal_mode = WAL");
-db.exec(`
-  create table if not exists emergencies (
-    id text primary key,
-    title text not null,
-    details text not null,
-    created_at text not null,
-    source_ip_hash text
+const TURSO_URL = (process.env.TURSO_DATABASE_URL || "").trim();
+const TURSO_TOKEN = (process.env.TURSO_AUTH_TOKEN || "").trim();
+
+let db;
+
+if (TURSO_URL) {
+  // Production: use @libsql/client pointing at a Turso hosted database.
+  const { createClient } = await import("@libsql/client");
+  const client = createClient({
+    url: TURSO_URL,
+    authToken: TURSO_TOKEN || undefined,
+  });
+
+  await client.execute(`
+    create table if not exists emergencies (
+      id text primary key,
+      title text not null,
+      details text not null,
+      created_at text not null,
+      source_ip_hash text
+    )
+  `);
+
+  db = {
+    mode: "turso",
+    async list(limit) {
+      const result = await client.execute({
+        sql: "select id, title, details, created_at as createdAt from emergencies order by datetime(created_at) desc limit ?",
+        args: [limit],
+      });
+      return result.rows;
+    },
+    async insert(row) {
+      await client.execute({
+        sql: "insert into emergencies (id, title, details, created_at, source_ip_hash) values (?, ?, ?, ?, ?)",
+        args: [row.id, row.title, row.details, row.created_at, row.source_ip_hash],
+      });
+    },
+  };
+} else {
+  // Local development: use better-sqlite3 with a file on disk.
+  const Database = (await import("better-sqlite3")).default;
+  const dataDir = path.join(__dirname, "data");
+  const dbPath = path.join(dataDir, "ridiculous-emergencies.db");
+
+  fs.mkdirSync(dataDir, { recursive: true });
+
+  const sqlite = new Database(dbPath);
+  sqlite.pragma("journal_mode = WAL");
+  sqlite.exec(`
+    create table if not exists emergencies (
+      id text primary key,
+      title text not null,
+      details text not null,
+      created_at text not null,
+      source_ip_hash text
+    )
+  `);
+
+  const insertStmt = sqlite.prepare(
+    "insert into emergencies (id, title, details, created_at, source_ip_hash) values (@id, @title, @details, @created_at, @source_ip_hash)"
   );
-`);
+  const listStmt = sqlite.prepare(
+    "select id, title, details, created_at as createdAt from emergencies order by datetime(created_at) desc limit ?"
+  );
 
-const insertEmergency = db.prepare(`
-  insert into emergencies (id, title, details, created_at, source_ip_hash)
-  values (@id, @title, @details, @created_at, @source_ip_hash)
-`);
+  db = {
+    mode: "sqlite",
+    async list(limit) {
+      return listStmt.all(limit);
+    },
+    async insert(row) {
+      insertStmt.run(row);
+    },
+  };
+}
 
-const listEmergencies = db.prepare(`
-  select id, title, details, created_at as createdAt
-  from emergencies
-  order by datetime(created_at) desc
-  limit ?
-`);
+/* ------------------------------------------------------------------ */
+/*  Express app                                                        */
+/* ------------------------------------------------------------------ */
 
 const app = express();
 const PORT = Number(process.env.PORT || 8787);
@@ -103,20 +159,25 @@ app.use(express.json({ limit: "24kb" }));
 app.use(allowCors);
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+  res.json({ ok: true, db: db.mode });
 });
 
-app.get("/api/emergencies", (req, res) => {
+app.get("/api/emergencies", async (req, res) => {
   const requestedLimit = Number.parseInt(String(req.query.limit || "50"), 10);
   const safeLimit = Number.isFinite(requestedLimit)
     ? Math.min(Math.max(requestedLimit, 1), 200)
     : 50;
 
-  const emergencies = listEmergencies.all(safeLimit);
-  res.json({ emergencies });
+  try {
+    const emergencies = await db.list(safeLimit);
+    res.json({ emergencies });
+  } catch (err) {
+    console.error("Failed to list emergencies:", err);
+    jsonError(res, 500, "Failed to load emergencies.");
+  }
 });
 
-app.post("/api/emergencies", rateLimit, (req, res) => {
+app.post("/api/emergencies", rateLimit, async (req, res) => {
   const title = normalizeWhitespace(req.body?.title);
   const details = normalizeWhitespace(req.body?.details);
 
@@ -144,7 +205,12 @@ app.post("/api/emergencies", rateLimit, (req, res) => {
     source_ip_hash: hashIp(getClientIp(req)),
   };
 
-  insertEmergency.run(emergency);
+  try {
+    await db.insert(emergency);
+  } catch (err) {
+    console.error("Failed to insert emergency:", err);
+    return jsonError(res, 500, "Failed to file emergency.");
+  }
 
   return res.status(201).json({
     emergency: {
@@ -161,5 +227,5 @@ app.use((_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Department of Ridiculous API listening on http://localhost:${PORT}`);
+  console.log(`Department of Ridiculous API listening on http://localhost:${PORT} [db: ${db.mode}]`);
 });
