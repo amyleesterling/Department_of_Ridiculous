@@ -12,57 +12,40 @@ npm run dev
 
 The API starts on `http://localhost:8787` by default. Local mode uses SQLite on disk (`data/ridiculous-emergencies.db`).
 
-## Deploy with Turso (free hosted database)
+## Deploy for global emergencies
 
-For global persistence, the API supports [Turso](https://turso.tech) — a free hosted SQLite service.
+Set one environment variable — `DATABASE_URL` — pointing at any PostgreSQL database. Works with Supabase, Neon, Railway, Render, AWS RDS, Google Cloud SQL, or any other Postgres provider.
 
-### 1. Create a Turso database
+### 1. Get a PostgreSQL database
 
-```bash
-# Install the Turso CLI
-curl -sSfL https://get.tur.so/install.sh | bash
+Use whatever provider you prefer. Example with Supabase:
 
-# Sign up / log in
-turso auth signup   # or: turso auth login
+1. Create a project at [supabase.com](https://supabase.com)
+2. Go to **Settings > Database** and copy the connection string (URI format)
 
-# Create a database
-turso db create ridiculous-emergencies
+The table is created automatically on first startup.
 
-# Get the connection URL
-turso db show ridiculous-emergencies --url
-
-# Create an auth token
-turso db tokens create ridiculous-emergencies
-```
-
-### 2. Set environment variables
-
-```bash
-TURSO_DATABASE_URL=libsql://your-db-name-your-org.turso.io
-TURSO_AUTH_TOKEN=your-token-here
-```
-
-### 3. Deploy the API
+### 2. Deploy the API
 
 The API can be deployed anywhere that runs Node.js (Render, Railway, Fly.io, etc.). A `Dockerfile` is included for container-based platforms.
 
-Example with Render:
-1. Create a new **Web Service** from this repo's `api/` directory
-2. Set the environment variables above
-3. Use `npm install && npm start` as the build/start commands
-4. Note your service URL (e.g. `https://your-service.onrender.com`)
+Set the environment variable:
 
-### 4. Point the frontend at the API
+```bash
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+```
+
+### 3. Point the frontend at the API
 
 In `index.html`, set the meta tag to your deployed API URL:
 
 ```html
-<meta name="ridiculous-api-base" content="https://your-service.onrender.com" />
+<meta name="ridiculous-api-base" content="https://your-api-host.example.com" />
 ```
 
 ## Endpoints
 
-- `GET /health` — returns `{ ok: true, db: "turso" | "sqlite" }`
+- `GET /health` — returns `{ ok: true, db: "postgres" | "sqlite" }`
 - `GET /api/emergencies` — list recent emergencies
 - `POST /api/emergencies` — file a new emergency
 
@@ -71,8 +54,7 @@ In `index.html`, set the meta tag to your deployed API URL:
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `8787` | Server port |
-| `TURSO_DATABASE_URL` | _(empty)_ | Turso database URL. If empty, uses local SQLite. |
-| `TURSO_AUTH_TOKEN` | _(empty)_ | Turso auth token |
+| `DATABASE_URL` | _(empty)_ | PostgreSQL connection string. If empty, uses local SQLite. |
 | `ALLOW_ORIGIN` | `*` | CORS allowed origin |
 | `RATE_LIMIT_MAX` | `20` | Max POSTs per IP per window |
 | `RATE_LIMIT_WINDOW_MS` | `600000` | Rate limit window (10 min) |
@@ -81,4 +63,4 @@ In `index.html`, set the meta tag to your deployed API URL:
 
 - The API is append-only. There is no delete route.
 - Basic rate limiting is enabled for emergency submissions.
-- When `TURSO_DATABASE_URL` is not set, the API falls back to local SQLite for development.
+- When `DATABASE_URL` is not set, the API falls back to local SQLite for development.

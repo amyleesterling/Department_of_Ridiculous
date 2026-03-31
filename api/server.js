@@ -9,46 +9,43 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /* ------------------------------------------------------------------ */
-/*  Database – Turso (libSQL) for production, better-sqlite3 for local */
+/*  Database – PostgreSQL for production, SQLite for local dev          */
 /* ------------------------------------------------------------------ */
 
-const TURSO_URL = (process.env.TURSO_DATABASE_URL || "").trim();
-const TURSO_TOKEN = (process.env.TURSO_AUTH_TOKEN || "").trim();
+const DATABASE_URL = (process.env.DATABASE_URL || "").trim();
 
 let db;
 
-if (TURSO_URL) {
-  // Production: use @libsql/client pointing at a Turso hosted database.
-  const { createClient } = await import("@libsql/client");
-  const client = createClient({
-    url: TURSO_URL,
-    authToken: TURSO_TOKEN || undefined,
-  });
+if (DATABASE_URL) {
+  // Production: use PostgreSQL via the standard pg driver.
+  // Works with Supabase, Neon, Railway, Render, AWS RDS, etc.
+  const pg = (await import("pg")).default;
+  const pool = new pg.Pool({ connectionString: DATABASE_URL });
 
-  await client.execute(`
+  await pool.query(`
     create table if not exists emergencies (
       id text primary key,
       title text not null,
       details text not null,
-      created_at text not null,
+      created_at timestamptz not null,
       source_ip_hash text
     )
   `);
 
   db = {
-    mode: "turso",
+    mode: "postgres",
     async list(limit) {
-      const result = await client.execute({
-        sql: "select id, title, details, created_at as createdAt from emergencies order by datetime(created_at) desc limit ?",
-        args: [limit],
-      });
+      const result = await pool.query(
+        "select id, title, details, created_at as \"createdAt\" from emergencies order by created_at desc limit $1",
+        [limit]
+      );
       return result.rows;
     },
     async insert(row) {
-      await client.execute({
-        sql: "insert into emergencies (id, title, details, created_at, source_ip_hash) values (?, ?, ?, ?, ?)",
-        args: [row.id, row.title, row.details, row.created_at, row.source_ip_hash],
-      });
+      await pool.query(
+        "insert into emergencies (id, title, details, created_at, source_ip_hash) values ($1, $2, $3, $4, $5)",
+        [row.id, row.title, row.details, row.created_at, row.source_ip_hash]
+      );
     },
   };
 } else {
