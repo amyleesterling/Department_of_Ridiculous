@@ -8,6 +8,12 @@
   - Homepage: `https://amyleesterling.github.io/Department_of_Ridiculous/`
   - React page: `https://amyleesterling.github.io/Department_of_Ridiculous/react-2/`
 
+## Naming Direction
+
+- Current naming direction under consideration: rename from `yto` to `Whai`.
+- `Whai` was favored as a stronger, more intentional, more brandable name.
+- No public rename has been applied yet; treat this as a noted direction for future branding and product naming decisions.
+
 ## Homepage
 
 - Main site is plain static HTML/CSS/JS:
@@ -25,9 +31,13 @@
 ## Emergency Storage
 
 - Current frontend behavior:
-  - If `<meta name="ridiculous-api-base" content="">` in `index.html` is blank, emergencies use `localStorage`.
-  - If that meta tag points to a backend URL, the homepage uses the API for shared public emergencies.
+  - The homepage emergency ledger should run in shared global mode through a Google Sheet-backed Apps Script API.
+  - If `<meta name="ridiculous-api-base" content="">` in `index.html` is blank, the ledger will not accept submissions until the Apps Script URL is configured.
 - Frontend emergency logic lives in `script.js`.
+- Current deployed Apps Script URL in `index.html`:
+  - `https://script.google.com/macros/s/AKfycbwpkrCOWhMkvRDjUJJJDeFjCmDTuaGWNliBxJXMLNtxaUfazgJGsu6dvUUOXMuXiDZB/exec`
+- Redeployed Version 3 on Mar 31 2026, matching `google-apps-script/Code.gs`.
+- Public emergency reads and writes should both be working now.
 
 ## Tiny API
 
@@ -59,6 +69,19 @@
 
 ## Deployment Notes
 
-- GitHub Pages only serves the static site; it does not run the API.
-- To enable shared public emergencies, deploy `api/` separately and set the homepage `ridiculous-api-base` meta tag to that backend URL.
-- Backend dependencies have been scaffolded, but `npm install` was not run during the last edit pass.
+- GitHub Pages live site was pushed during this session.
+- A clean publish worktree was used at:
+  - `C:\Users\amyle\Documents\New project\department-of-ridiculous-publish`
+- The current live site includes:
+  - share buttons in the top right
+  - visible `Name` on emergencies
+  - visible `!` button
+  - critical infrastructure failures section
+  - footer credit
+  - polling refresh loop for public emergencies
+- The remaining failing path is `Declare Emergency`.
+- Fastest handoff path for Claude:
+  - inspect `google-apps-script/Code.gs`
+  - verify the user's Apps Script project exactly matches it
+  - redeploy the web app
+  - then retest `Declare Emergency`

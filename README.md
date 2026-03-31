@@ -20,25 +20,17 @@ For GitHub Pages, keep the repository publishing from `main` and `/(root)`. The 
 
 ## Shared Public Emergencies
 
-The homepage emergency ledger can now run in two modes:
+The homepage emergency ledger can use a Google Sheet as the shared global backend via a tiny Apps Script web app in [`google-apps-script/README.md`](C:\Users\amyle\Documents\New%20project\department-of-ridiculous-internet\google-apps-script\README.md).
 
-- Fallback mode: browser-only storage with `localStorage`
-- Shared mode: the tiny append-only API in [`api/README.md`](C:\Users\amyle\Documents\New%20project\department-of-ridiculous-internet\api\README.md)
+To enable global emergencies:
 
-To enable shared public emergencies:
-
-1. Run or deploy the API from `api/`
-2. Edit the `<meta name="ridiculous-api-base" ...>` tag in [`index.html`](C:\Users\amyle\Documents\New%20project\department-of-ridiculous-internet\index.html) so its `content` points at your deployed API base URL
+1. Paste and deploy the Apps Script from `google-apps-script/`
+2. Edit the `<meta name="ridiculous-api-base" ...>` tag in [`index.html`](C:\Users\amyle\Documents\New%20project\department-of-ridiculous-internet\index.html) so its `content` points at your deployed Apps Script `/exec` URL
 3. Keep GitHub Pages serving the static site from `main` and `/(root)`
-
-Example API base:
-
-- `http://localhost:8787` for local testing
-- `https://your-ridiculous-api.example.com` for deployment
 
 ## Files
 
 - `index.html` contains the page structure.
 - `styles.css` contains the visual system, layout, and animation.
-- `script.js` powers the chaos controls and random absurdity.
-- `api/server.js` is the tiny append-only backend for shared emergencies.
+- `script.js` powers the chaos controls, random absurdity, and shared emergency client.
+- `google-apps-script/Code.gs` is the Google Sheet-backed shared emergency API.

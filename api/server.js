@@ -74,28 +74,127 @@ if (DATABASE_URL) {
   const listStmt = sqlite.prepare(
     "select id, title, details, created_at as createdAt from emergencies order by datetime(created_at) desc limit ?"
   );
+`);
+db.exec(`
+  create table if not exists emergency_bangs (
+    emergency_id text not null,
+    source_ip_hash text not null,
+    created_at text not null,
+    unique (emergency_id, source_ip_hash)
+  );
+`);
 
-  db = {
-    mode: "sqlite",
-    async list(limit) {
-      return listStmt.all(limit);
-    },
-    async insert(row) {
-      insertStmt.run(row);
-    },
-  };
+const emergencyColumns = db.prepare(`pragma table_info(emergencies)`).all();
+if (!emergencyColumns.some((column) => column.name === "bangs")) {
+  db.exec(`alter table emergencies add column bangs integer not null default 0;`);
+}
+if (!emergencyColumns.some((column) => column.name === "seeded")) {
+  db.exec(`alter table emergencies add column seeded integer not null default 0;`);
 }
 
-/* ------------------------------------------------------------------ */
-/*  Express app                                                        */
-/* ------------------------------------------------------------------ */
+const insertEmergency = db.prepare(`
+  insert into emergencies (id, title, details, created_at, source_ip_hash, bangs, seeded)
+  values (@id, @title, @details, @created_at, @source_ip_hash, @bangs, @seeded)
+`);
+
+const insertSeedEmergency = db.prepare(`
+  insert or ignore into emergencies (id, title, details, created_at, source_ip_hash, bangs, seeded)
+  values (@id, @title, @details, @created_at, @source_ip_hash, @bangs, @seeded)
+`);
+
+const listEmergencies = db.prepare(`
+  select id, title, details, created_at as createdAt, bangs, seeded
+  from emergencies
+  order by bangs desc, datetime(created_at) desc
+  limit ?
+`);
+
+const getEmergencyById = db.prepare(`
+  select id, title, details, created_at as createdAt, bangs, seeded
+  from emergencies
+  where id = ?
+`);
+
+const insertBang = db.prepare(`
+  insert or ignore into emergency_bangs (emergency_id, source_ip_hash, created_at)
+  values (@emergency_id, @source_ip_hash, @created_at)
+`);
+
+const incrementBangCount = db.prepare(`
+  update emergencies
+  set bangs = bangs + 1
+  where id = ?
+`);
+
+const seedEmergencies = [
+  {
+    id: "seed-sideways-shipping",
+    title: "Strategic Sideways Shipping Event",
+    details: "A single majestic vessel has once again discovered that global trade was overdependent on one narrow watery shortcut and several extremely worried spreadsheets.",
+    created_at: "2026-03-20T13:00:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 42,
+    seeded: 1,
+  },
+  {
+    id: "seed-mysterious-balloon",
+    title: "Unlicensed Sky Orb Diplomacy Incident",
+    details: "Citizens are asked not to project either romance or espionage onto the suspiciously high balloon until the committee on dramatic silhouettes files its report.",
+    created_at: "2026-03-21T18:20:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 31,
+    seeded: 1,
+  },
+  {
+    id: "seed-bank-run-opera",
+    title: "Regional Bank Run at the Champagne Buffet",
+    details: "A formerly confident financial institution has entered its chandelier era. Please collect your deposits in an orderly and emotionally literate fashion.",
+    created_at: "2026-03-22T16:45:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 27,
+    seeded: 1,
+  },
+  {
+    id: "seed-palace-memoir",
+    title: "Royal Memoir Weather System",
+    details: "An entire news cycle has been consumed by one family dispute, six cashmere coats, and an aggressively quotable corridor confrontation.",
+    created_at: "2026-03-23T11:15:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 18,
+    seeded: 1,
+  },
+  {
+    id: "seed-app-outage",
+    title: "National Group Chat Infrastructure Meltdown",
+    details: "Messaging platforms have faltered, forcing the public to experience thoughts in silence and, in several cases, speak directly to nearby humans.",
+    created_at: "2026-03-24T08:05:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 25,
+    seeded: 1,
+  },
+  {
+    id: "seed-theatrical-fog",
+    title: "Unsanctioned Fog Machine at Civic Function",
+    details: "Visibility remains low, confidence remains high, and somebody important is absolutely about to enter from stage left with avoidable conviction.",
+    created_at: "2026-03-24T21:30:00.000Z",
+    source_ip_hash: "seeded",
+    bangs: 15,
+    seeded: 1,
+  },
+];
+
+seedEmergencies.forEach((entry) => {
+  insertSeedEmergency.run(entry);
+});
 
 const app = express();
 const PORT = Number(process.env.PORT || 8787);
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "*";
 const MAX_POSTS_PER_WINDOW = Number(process.env.RATE_LIMIT_MAX || 20);
+const MAX_BANGS_PER_WINDOW = Number(process.env.BANG_RATE_LIMIT_MAX || 80);
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 10 * 60 * 1000);
-const rateWindow = new Map();
+const postRateWindow = new Map();
+const bangRateWindow = new Map();
 
 function jsonError(res, status, message) {
   return res.status(status).json({ error: message });
@@ -129,26 +228,86 @@ function allowCors(req, res, next) {
   return next();
 }
 
-function rateLimit(req, res, next) {
-  const key = hashIp(getClientIp(req));
-  const now = Date.now();
-  const current = rateWindow.get(key);
+function rateLimit(windowStore, maxPerWindow, message) {
+  return (req, res, next) => {
+    const key = hashIp(getClientIp(req));
+    const now = Date.now();
+    const current = windowStore.get(key);
 
-  if (!current || now > current.resetAt) {
-    rateWindow.set(key, {
-      count: 1,
-      resetAt: now + RATE_LIMIT_WINDOW_MS,
-    });
+    if (!current || now > current.resetAt) {
+      windowStore.set(key, {
+        count: 1,
+        resetAt: now + RATE_LIMIT_WINDOW_MS,
+      });
+      return next();
+    }
+
+    if (current.count >= maxPerWindow) {
+      return jsonError(res, 429, message);
+    }
+
+    current.count += 1;
+    windowStore.set(key, current);
     return next();
+  };
+}
+
+const postRateLimit = rateLimit(
+  postRateWindow,
+  MAX_POSTS_PER_WINDOW,
+  "Too many emergencies filed from this source. Please try again later.",
+);
+const bangRateLimit = rateLimit(
+  bangRateWindow,
+  MAX_BANGS_PER_WINDOW,
+  "Too many public ! votes from this source. Please try again later.",
+);
+
+function serializeEmergency(id) {
+  return getEmergencyById.get(id) || null;
+}
+
+function recordBang(emergencyId, sourceIpHash) {
+  const now = new Date().toISOString();
+  const inserted = insertBang.run({
+    emergency_id: emergencyId,
+    source_ip_hash: sourceIpHash,
+    created_at: now,
+  });
+
+  if (inserted.changes === 0) {
+    return false;
   }
 
-  if (current.count >= MAX_POSTS_PER_WINDOW) {
-    return jsonError(res, 429, "Too many emergencies filed from this source. Please try again later.");
+  incrementBangCount.run(emergencyId);
+  return true;
+}
+
+function normalizeEmergencyPayload(body) {
+  return {
+    title: normalizeWhitespace(body?.title),
+    details: normalizeWhitespace(body?.details),
+  };
+}
+
+function validateEmergencyPayload({ title, details }) {
+  if (!title || title.length < 3) {
+    return "Emergency title must be at least 3 characters.";
   }
 
-  current.count += 1;
-  rateWindow.set(key, current);
-  return next();
+  if (title.length > 120) {
+    return "Emergency title must be 120 characters or fewer.";
+  }
+
+  if (!details || details.length < 8) {
+    return "Emergency bulletin must be at least 8 characters.";
+  }
+
+  if (details.length > 420) {
+    return "Emergency bulletin must be 420 characters or fewer.";
+  }
+
+  return null;
 }
 
 app.disable("x-powered-by");
@@ -174,24 +333,12 @@ app.get("/api/emergencies", async (req, res) => {
   }
 });
 
-app.post("/api/emergencies", rateLimit, async (req, res) => {
-  const title = normalizeWhitespace(req.body?.title);
-  const details = normalizeWhitespace(req.body?.details);
+app.post("/api/emergencies", postRateLimit, (req, res) => {
+  const { title, details } = normalizeEmergencyPayload(req.body);
+  const validationError = validateEmergencyPayload({ title, details });
 
-  if (!title || title.length < 3) {
-    return jsonError(res, 400, "Emergency title must be at least 3 characters.");
-  }
-
-  if (title.length > 120) {
-    return jsonError(res, 400, "Emergency title must be 120 characters or fewer.");
-  }
-
-  if (!details || details.length < 8) {
-    return jsonError(res, 400, "Emergency bulletin must be at least 8 characters.");
-  }
-
-  if (details.length > 420) {
-    return jsonError(res, 400, "Emergency bulletin must be 420 characters or fewer.");
+  if (validationError) {
+    return jsonError(res, 400, validationError);
   }
 
   const emergency = {
@@ -200,6 +347,8 @@ app.post("/api/emergencies", rateLimit, async (req, res) => {
     details,
     created_at: new Date().toISOString(),
     source_ip_hash: hashIp(getClientIp(req)),
+    bangs: 0,
+    seeded: 0,
   };
 
   try {
@@ -210,12 +359,31 @@ app.post("/api/emergencies", rateLimit, async (req, res) => {
   }
 
   return res.status(201).json({
-    emergency: {
-      id: emergency.id,
-      title: emergency.title,
-      details: emergency.details,
-      createdAt: emergency.created_at,
-    },
+    emergency: serializeEmergency(emergency.id),
+  });
+});
+
+app.post("/api/emergencies/:id/bang", bangRateLimit, (req, res) => {
+  const emergencyId = normalizeWhitespace(req.params.id);
+  const emergency = serializeEmergency(emergencyId);
+
+  if (!emergency) {
+    return jsonError(res, 404, "Emergency not found.");
+  }
+
+  const sourceIpHash = hashIp(getClientIp(req));
+  const inserted = recordBang(emergencyId, sourceIpHash);
+  const updatedEmergency = serializeEmergency(emergencyId);
+
+  if (!inserted) {
+    return res.status(409).json({
+      error: "This source has already applied its public ! to that emergency.",
+      emergency: updatedEmergency,
+    });
+  }
+
+  return res.status(201).json({
+    emergency: updatedEmergency,
   });
 });
 

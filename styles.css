@@ -108,6 +108,7 @@ body.disco-active .manifesto p,
 body.disco-active .failure-card p,
 body.disco-active .failure-note,
 body.disco-active .annex-card p,
+body.disco-active .site-credit p,
 body.disco-active .ledger-card p,
 body.disco-active .ledger-empty,
 body.disco-active .status-label,
@@ -408,6 +409,22 @@ button {
 
 .page-shell {
   padding: 0 clamp(1.2rem, 3vw, 3rem) 3rem;
+}
+
+.site-credit {
+  position: relative;
+  z-index: 1;
+  padding: 0 clamp(1.2rem, 3vw, 3rem) 3rem;
+}
+
+.site-credit p {
+  margin: 0;
+  text-align: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 
 .ticker-wrap {
@@ -1488,6 +1505,7 @@ body.government-mode .manifesto p,
 body.government-mode .failure-card p,
 body.government-mode .failure-note,
 body.government-mode .annex-card p,
+body.government-mode .site-credit p,
 body.government-mode .panel-note,
 body.government-mode .status-label,
 body.government-mode .status-grid dt,

@@ -1,6 +1,6 @@
 # Tiny API
 
-This is the append-only backend for shared public emergency submissions.
+This is the tiny backend for shared public emergency submissions and public `!` votes.
 
 ## Run locally
 
@@ -45,22 +45,16 @@ In `index.html`, set the meta tag to your deployed API URL:
 
 ## Endpoints
 
-- `GET /health` — returns `{ ok: true, db: "postgres" | "sqlite" }`
-- `GET /api/emergencies` — list recent emergencies
-- `POST /api/emergencies` — file a new emergency
-
-## Environment variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `8787` | Server port |
-| `DATABASE_URL` | _(empty)_ | PostgreSQL connection string. If empty, uses local SQLite. |
-| `ALLOW_ORIGIN` | `*` | CORS allowed origin |
-| `RATE_LIMIT_MAX` | `20` | Max POSTs per IP per window |
-| `RATE_LIMIT_WINDOW_MS` | `600000` | Rate limit window (10 min) |
+- `GET /health`
+- `GET /api/emergencies`
+- `POST /api/emergencies`
+- `POST /api/emergencies/:id/bang`
 
 ## Notes
 
-- The API is append-only. There is no delete route.
-- Basic rate limiting is enabled for emergency submissions.
-- When `DATABASE_URL` is not set, the API falls back to local SQLite for development.
+- Data is stored in `api/data/ridiculous-emergencies.db`.
+- The API seeds a handful of starter emergencies on boot if they do not already exist.
+- Public ranking is based on `bangs desc, created_at desc`.
+- A given source can only apply one public `!` per emergency.
+- Basic rate limiting is enabled for both emergency submissions and `!` votes.
+- Set `ALLOW_ORIGIN` if you want to restrict which frontend origin can call the API.
