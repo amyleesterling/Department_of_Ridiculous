@@ -197,43 +197,21 @@ function fetchAppsScriptJsonp(params = {}) {
 }
 
 function postAppsScriptForm(params = {}) {
-  return new Promise((resolve) => {
-    const iframeName = `ridiculousPost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const iframe = document.createElement("iframe");
-    const form = document.createElement("form");
-
-    iframe.name = iframeName;
-    iframe.hidden = true;
-    form.method = "POST";
-    form.action = buildAppsScriptUrl();
-    form.target = iframeName;
-    form.hidden = true;
-
-    Object.entries(params).forEach(([key, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = String(value);
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-
-    const cleanup = () => {
-      form.remove();
-      iframe.remove();
-    };
-
-    iframe.addEventListener("load", () => {
-      window.setTimeout(() => {
-        cleanup();
-        resolve();
-      }, 100);
-    }, { once: true });
-
-    form.submit();
+  const body = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      body.set(key, String(value));
+    }
   });
+
+  return fetch(buildAppsScriptUrl(), {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: body.toString(),
+  }).then(() => undefined);
 }
 
 function findLatestMatchingEmergency(entries, match) {
