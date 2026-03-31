@@ -8,7 +8,7 @@
     name="description"
     content="An aggressively unnecessary website featuring absurd emergencies, disco toggles, and elite nonsense."
   />
-  <meta name="ridiculous-api-base" content="" />
+  <meta name="ridiculous-api-base" content="https://script.google.com/macros/s/AKfycbxe4BPtTkMtTZH-H9Xsrm_CtycwYfPQtLWETVHtFhSfpvcKf7pBWqMdpTXZEWF-mLU_/exec" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -21,6 +21,11 @@
   <div class="noise" aria-hidden="true"></div>
   <div class="orb orb-one" aria-hidden="true"></div>
   <div class="orb orb-two" aria-hidden="true"></div>
+  <nav class="site-share" aria-label="Share this page">
+    <a class="share-pill" id="shareX" href="#" target="_blank" rel="noreferrer">X</a>
+    <a class="share-pill" id="shareFacebook" href="#" target="_blank" rel="noreferrer">FB</a>
+    <a class="share-pill" id="shareEmail" href="#">Email</a>
+  </nav>
 
   <header class="hero">
     <div class="hero-copy" data-chaos-box>
@@ -33,6 +38,7 @@
       <div class="hero-actions">
         <button class="primary-button" id="missionBtn">Issue New Emergency</button>
         <button class="ghost-button" id="discoBtn">Activate Disco Protocol</button>
+        <a class="ghost-button page-link" href="./theatre.html">Preview the Theatre Wing</a>
         <a class="ghost-button page-link" href="./react-2/">Enter the Parade Annex</a>
       </div>
     </div>
@@ -138,6 +144,7 @@
         <div>
           <p class="panel-kicker" data-chaos-text>Citizen filing portal</p>
           <h2 data-chaos-text>State Emergencies Recently Declared</h2>
+          <p class="ledger-sort-note" data-chaos-text>Floating by public ! endorsements, then filing time.</p>
         </div>
         <button class="ghost-button ledger-button" id="ledgerBtn">File Another Emergency</button>
       </div>
@@ -145,6 +152,38 @@
       <p class="ledger-empty" id="emergencyEmpty" data-chaos-text>
         No citizen emergencies filed yet. The state remains suspiciously calm.
       </p>
+    </section>
+
+    <section class="infrastructure-failures" data-chaos-box>
+      <div class="failure-header">
+        <div>
+          <p class="panel-kicker" data-chaos-text>National resilience dashboard</p>
+          <h2 data-chaos-text>Critical Infrastructure Failures</h2>
+          <p class="failure-note" data-chaos-text>All systems remain online, overdecorated, and one brass section away from formal collapse.</p>
+        </div>
+      </div>
+      <div class="failure-grid">
+        <article class="failure-card" data-chaos-box>
+          <div class="failure-status">Status: Heroically blinking</div>
+          <h3 data-chaos-text>Interstate Cone Alignment Network</h3>
+          <p data-chaos-text>Traffic cones have organized themselves into an avant-garde detour spiral and are now funneling commuters toward a ceremonial cul-de-sac.</p>
+        </article>
+        <article class="failure-card" data-chaos-box>
+          <div class="failure-status">Status: Damp with authority</div>
+          <h3 data-chaos-text>Ceremonial Fountain Pressure Grid</h3>
+          <p data-chaos-text>Several civic fountains are oversharing policy updates through aggressive mist plumes and one deeply theatrical central geyser.</p>
+        </article>
+        <article class="failure-card" data-chaos-box>
+          <div class="failure-status">Status: Soft outage</div>
+          <h3 data-chaos-text>National Lavender Fog Pipeline</h3>
+          <p data-chaos-text>The calming vapor supply has been rerouted into three courtrooms, a sandwich district, and one alarmingly serene parking garage.</p>
+        </article>
+        <article class="failure-card" data-chaos-box>
+          <div class="failure-status">Status: Rotating unnecessarily</div>
+          <h3 data-chaos-text>Emergency Podium Rotation Authority</h3>
+          <p data-chaos-text>All briefing podiums are turning 14 percent too dramatically, causing spokespersons to orbit their own remarks before landing in avoidable flourish.</p>
+        </article>
+      </div>
     </section>
 
     <section class="manifesto" data-chaos-box>
@@ -163,7 +202,10 @@
         Proceed to the React-powered auxiliary chamber for multinational aura
         scaling, decorative momentum, and a complete lack of indoor voices.
       </p>
-      <a class="primary-button annex-link" href="./react-2/">Respond With Maximum Nothing</a>
+      <div class="annex-actions">
+        <a class="primary-button annex-link" href="./react-2/">Respond With Maximum Nothing</a>
+        <a class="ghost-button annex-link alt-link" href="./theatre.html">Visit the Theatre Wing</a>
+      </div>
     </section>
   </main>
 
@@ -192,6 +234,17 @@
         <button class="composer-close" id="composerClose" aria-label="Close emergency composer">X</button>
       </div>
       <form class="composer-form" id="emergencyForm">
+        <label class="composer-field">
+          <span>Your name</span>
+          <input
+            id="emergencyNameInput"
+            name="name"
+            type="text"
+            maxlength="80"
+            placeholder="Example: Deputy Glitter"
+            required
+          />
+        </label>
         <label class="composer-field">
           <span>Emergency title</span>
           <input
