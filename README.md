@@ -1,6 +1,6 @@
 # Department of Ridiculous Internet
 
-An aggressively unnecessary website featuring absurd emergencies, disco toggles, heroic typography, and a government-grade commitment to nonsense.
+An aggressively unnecessary website of absurd emergencies and a government-grade commitment to nonsense.
 
 ## Live Site
 
