@@ -36,6 +36,7 @@ const GOVERNMENT_STAGE = 9;
 const EMERGENCY_BANG_STORAGE_KEY = "department_of_ridiculous_bang_history";
 const EMERGENCY_SOURCE_TOKEN_KEY = "department_of_ridiculous_source_token";
 const API_BASE = (document.querySelector('meta[name="ridiculous-api-base"]')?.content || "").trim().replace(/\/$/, "");
+const USE_APPS_SCRIPT_BRIDGE = /script\.google/i.test(API_BASE);
 
 let chaos = 73;
 let chaosStage = 0;
@@ -157,14 +158,121 @@ async function requestApi(path, options = {}) {
   return payload;
 }
 
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function buildAppsScriptUrl(params = {}) {
+  const url = new URL(API_BASE);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  });
+  return url.toString();
+}
+
+function fetchAppsScriptJsonp(params = {}) {
+  return new Promise((resolve, reject) => {
+    const callbackName = `ridiculousJsonp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const script = document.createElement("script");
+    const cleanup = () => {
+      delete window[callbackName];
+      script.remove();
+    };
+
+    window[callbackName] = (payload) => {
+      cleanup();
+      resolve(payload || {});
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Failed to load shared emergencies."));
+    };
+
+    script.src = buildAppsScriptUrl({ ...params, callback: callbackName });
+    document.body.appendChild(script);
+  });
+}
+
+function postAppsScriptForm(params = {}) {
+  return new Promise((resolve) => {
+    const iframeName = `ridiculousPost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const iframe = document.createElement("iframe");
+    const form = document.createElement("form");
+
+    iframe.name = iframeName;
+    iframe.hidden = true;
+    form.method = "POST";
+    form.action = buildAppsScriptUrl();
+    form.target = iframeName;
+    form.hidden = true;
+
+    Object.entries(params).forEach(([key, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = String(value);
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+
+    const cleanup = () => {
+      form.remove();
+      iframe.remove();
+    };
+
+    iframe.addEventListener("load", () => {
+      window.setTimeout(() => {
+        cleanup();
+        resolve();
+      }, 100);
+    }, { once: true });
+
+    form.submit();
+  });
+}
+
+function findLatestMatchingEmergency(entries, match) {
+  return sortEmergencies(entries).find((entry) => (
+    entry.name === match.name
+    && entry.title === match.title
+    && entry.details === match.details
+  )) || null;
+}
+
 async function fetchSharedEmergencies() {
   if (!API_BASE) return null;
+  if (USE_APPS_SCRIPT_BRIDGE) {
+    const payload = await fetchAppsScriptJsonp({ action: "list", limit: 50 });
+    if (payload && payload.ok === false) {
+      const error = new Error(payload.error || "Failed to load emergencies.");
+      error.status = payload.status || 500;
+      throw error;
+    }
+    return Array.isArray(payload.emergencies) ? payload.emergencies : [];
+  }
   const payload = await requestApi("/api/emergencies", { headers: { Accept: "application/json" } });
   return Array.isArray(payload.emergencies) ? payload.emergencies : [];
 }
 
 async function createSharedEmergency(entry) {
   if (!API_BASE) return null;
+  if (USE_APPS_SCRIPT_BRIDGE) {
+    await postAppsScriptForm({
+      action: "create",
+      name: entry.name,
+      title: entry.title,
+      details: entry.details,
+      sourceToken,
+    });
+    await wait(900);
+    const emergencies = await fetchSharedEmergencies();
+    return findLatestMatchingEmergency(emergencies || [], entry);
+  }
   const payload = await requestApi("/api/emergencies", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -174,6 +282,16 @@ async function createSharedEmergency(entry) {
 }
 
 async function bangSharedEmergency(id) {
+  if (USE_APPS_SCRIPT_BRIDGE) {
+    await postAppsScriptForm({
+      action: "bang",
+      id,
+      sourceToken,
+    });
+    await wait(700);
+    const emergencies = await fetchSharedEmergencies();
+    return (emergencies || []).find((entry) => entry.id === id) || null;
+  }
   const payload = await requestApi(`/api/emergencies/${encodeURIComponent(id)}/bang`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
