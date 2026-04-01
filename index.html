@@ -100,7 +100,7 @@
         <div class="control-stack">
           <button class="loud-button" id="chaosBtn">Increase Chaos</button>
           <button class="loud-button undo" id="undoBtn">Undo Chaos</button>
-          <button class="loud-button alt" id="raccoonBtn">Release Raccoons</button>
+          <button class="loud-button alt" id="raccoonBtn">Release the Frogs</button>
           <button class="loud-button bureaucrat" id="bureaucratBtn">Feed the Bureaucrat</button>
           <button class="loud-button outline" id="shuffleBtn">Remix Reality</button>
         </div>
@@ -259,6 +259,48 @@
       </div>
     </section>
 
+    <section class="arcade-section navy-theme" id="invadersSection">
+      <div class="arcade-header">
+        <div>
+          <p class="panel-kicker">National security threat</p>
+          <h2>Defend the Homeland</h2>
+          <p class="arcade-subtitle">Budget line items are descending. Stamp them DENIED before they reach the treasury floor.</p>
+        </div>
+        <button class="arcade-start-btn" id="invadersStartBtn">Engage Defenses</button>
+      </div>
+      <div class="arcade-game-wrap">
+        <canvas id="invadersCanvas" width="480" height="400"></canvas>
+      </div>
+    </section>
+
+    <section class="arcade-section" style="background: linear-gradient(145deg, rgba(255,251,243,0.88), rgba(240,224,200,0.82));">
+      <div class="arcade-header">
+        <div>
+          <p class="panel-kicker" data-chaos-text>Bipartisan negotiation exercise</p>
+          <h2 data-chaos-text>The Lobby</h2>
+          <p class="arcade-subtitle" data-chaos-text>The Bill bounces between parties. Neither side can let it drop. Nothing gets passed.</p>
+        </div>
+        <button class="arcade-start-btn" id="pongStartBtn">Begin Session</button>
+      </div>
+      <div class="arcade-game-wrap">
+        <canvas id="pongCanvas" width="600" height="360"></canvas>
+      </div>
+    </section>
+
+    <section class="arcade-section navy-theme" id="breakoutSection">
+      <div class="arcade-header">
+        <div>
+          <p class="panel-kicker">Construction update</p>
+          <h2>Department HQ Demolition</h2>
+          <p class="arcade-subtitle">The org chart must come down. Break through every layer of bureaucratic hierarchy.</p>
+        </div>
+        <button class="arcade-start-btn" id="breakoutStartBtn">Begin Demolition</button>
+      </div>
+      <div class="arcade-game-wrap">
+        <canvas id="breakoutCanvas" width="480" height="400"></canvas>
+      </div>
+    </section>
+
     <section class="manifesto" data-chaos-box>
       <p class="panel-kicker" data-chaos-text>Institutional philosophy</p>
       <h2 data-chaos-text>We reject minimalism in favor of heroic overreaction.</h2>
@@ -353,7 +395,11 @@
   </div>
 
   <script src="./script.js?v=20260331c"></script>
-  <script src="./tetris.js?v=20260401a"></script>
-  <script src="./pacman.js?v=20260401a"></script>
+  <script src="./tetris.js?v=20260401b"></script>
+  <script src="./pacman.js?v=20260401b"></script>
+  <script src="./frogger.js?v=20260401a"></script>
+  <script src="./invaders.js?v=20260401a"></script>
+  <script src="./pong.js?v=20260401a"></script>
+  <script src="./breakout.js?v=20260401a"></script>
 </body>
 </html>

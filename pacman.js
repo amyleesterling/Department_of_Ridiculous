@@ -614,20 +614,9 @@
   }
 
   document.addEventListener("keydown", handleKey);
-
-  // hijack the bureaucrat button
-  const btn = document.getElementById("bureaucratBtn");
-  if (btn) {
-    // clone to remove old listeners
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    newBtn.addEventListener("click", openPacman);
-  }
-
-  // also allow closing with Escape
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && shell && !shell.classList.contains("hidden")) {
-      closePacman();
-    }
+    if (e.key === "Escape" && shell && !shell.classList.contains("hidden")) closePacman();
   });
+
+  window.openPacman = openPacman;
 })();
