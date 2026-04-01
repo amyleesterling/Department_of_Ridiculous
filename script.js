@@ -391,6 +391,8 @@ function closeComposer() {
 
 async function submitEmergency(event) {
   event.preventDefault();
+  const submitBtn = emergencyForm.querySelector('button[type="submit"]');
+  if (submitBtn.disabled) return;
   const name = normalizeWhitespace(emergencyNameInput.value);
   const title = normalizeWhitespace(emergencyTitleInput.value);
   const details = normalizeWhitespace(emergencyTextInput.value);
@@ -400,14 +402,20 @@ async function submitEmergency(event) {
     applyChaosStage();
     return;
   }
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Filing...";
   try {
     const sharedEntry = await createSharedEmergency({ name, title, details });
     if (sharedEntry) updateEmergencyEntry(sharedEntry);
   } catch (error) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Declare Emergency";
     setChaosContent(warningText, error.message || "Failed to file shared emergency.");
     applyChaosStage();
     return;
   }
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Declare Emergency";
   renderCitizenEmergencies();
   setChaosContent(warningText, `New statewide emergency filed: ${title}. Public confusion expected shortly.`);
   applyChaosStage();

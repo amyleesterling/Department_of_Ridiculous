@@ -5,7 +5,7 @@
   --ink-soft: rgba(20, 33, 61, 0.72);
   --paper: rgba(255, 249, 239, 0.74);
   --panel-border: rgba(20, 33, 61, 0.12);
-  --lime: #d8ff3e;
+  --lime: #c8e64e;
   --cyan: #53e0d7;
   --red: #ff3b30;
   --shadow: 0 24px 60px rgba(20, 33, 61, 0.16);
@@ -28,7 +28,7 @@ body {
   font-family: "Space Grotesk", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(216, 255, 62, 0.55), transparent 30%),
+    radial-gradient(circle at top left, rgba(200, 230, 78, 0.45), transparent 30%),
     radial-gradient(circle at 80% 20%, rgba(83, 224, 215, 0.45), transparent 32%),
     linear-gradient(135deg, #fdf6e8 0%, #ffd59d 45%, #ff8e5e 100%);
   overflow-x: hidden;
@@ -334,7 +334,7 @@ button {
 .primary-button {
   color: var(--ink);
   background: var(--lime);
-  box-shadow: 0 16px 30px rgba(216, 255, 62, 0.34);
+  box-shadow: 0 16px 30px rgba(200, 230, 78, 0.34);
 }
 
 .ghost-button {
@@ -692,13 +692,13 @@ button {
 
 .ledger-card.is-seeded {
   background:
-    radial-gradient(circle at top right, rgba(216, 255, 62, 0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.18), transparent 32%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(246, 238, 208, 0.72));
 }
 
 .ledger-card.is-focused {
   border-color: rgba(20, 33, 61, 0.42);
-  box-shadow: 0 0 0 0.22rem rgba(216, 255, 62, 0.26), 0 20px 38px rgba(20, 33, 61, 0.16);
+  box-shadow: 0 0 0 0.22rem rgba(200, 230, 78, 0.26), 0 20px 38px rgba(20, 33, 61, 0.16);
 }
 
 .ledger-card h3 {
@@ -803,7 +803,7 @@ button {
 }
 
 .mini-button.bang-button {
-  background: linear-gradient(135deg, rgba(216, 255, 62, 0.94), rgba(255, 217, 61, 0.92));
+  background: linear-gradient(135deg, rgba(200, 230, 78, 0.94), rgba(255, 217, 61, 0.92));
   border-color: rgba(20, 33, 61, 0.18);
 }
 
@@ -835,7 +835,7 @@ button {
   width: 9rem;
   height: 9rem;
   border-radius: 50%;
-  background: rgba(216, 255, 62, 0.18);
+  background: rgba(200, 230, 78, 0.18);
 }
 
 .cabinet-card h3 {
@@ -966,7 +966,7 @@ button {
   border-radius: 1.7rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background:
-    radial-gradient(circle at top right, rgba(216, 255, 62, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.18), transparent 30%),
     linear-gradient(145deg, rgba(255, 250, 241, 0.96), rgba(255, 229, 188, 0.94));
   box-shadow: 0 24px 80px rgba(20, 33, 61, 0.28);
 }
@@ -1467,7 +1467,7 @@ button {
   backdrop-filter: blur(16px);
   background:
     radial-gradient(circle at bottom left, rgba(83, 224, 215, 0.14), transparent 30%),
-    radial-gradient(circle at top right, rgba(216, 255, 62, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.12), transparent 28%),
     linear-gradient(145deg, rgba(255, 249, 239, 0.82), rgba(255, 232, 195, 0.76));
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);

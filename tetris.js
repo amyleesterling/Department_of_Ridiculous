@@ -19,7 +19,7 @@
     I: "#53e0d7",
     O: "#ffd93d",
     T: "#c584ff",
-    S: "#d8ff3e",
+    S: "#c8e64e",
     Z: "#ff3b30",
     L: "#ff8e5e",
     J: "#5b8fff",
