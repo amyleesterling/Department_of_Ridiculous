@@ -55,7 +55,9 @@
   function buildLanes() {
     lanes = [];
     const h = canvas.height;
-    const startY = h - LANE_H; // bottom safe zone
+    const isMobile = matchMedia("(pointer: coarse)").matches;
+    const bottomPad = isMobile ? LANE_H * 3 : LANE_H; // leave room for mobile d-pad
+    const startY = h - bottomPad; // bottom safe zone
     for (let i = 0; i < NUM_LANES; i++) {
       const y = startY - (i + 1) * LANE_H;
       const speed = (1.5 + Math.random() * 2.5) * (i % 2 === 0 ? 1 : -1);
@@ -74,17 +76,23 @@
     }
   }
 
+  function getBottomY() {
+    const isMobile = matchMedia("(pointer: coarse)").matches;
+    const bottomPad = isMobile ? LANE_H * 3 : LANE_H;
+    return canvas.height - bottomPad + LANE_H / 2 - FROG_SIZE / 2;
+  }
+
   function resetFrog() {
     frog = {
       x: canvas.width / 2 - FROG_SIZE / 2,
-      y: canvas.height - LANE_H / 2 - FROG_SIZE / 2,
+      y: getBottomY(),
       size: FROG_SIZE,
     };
   }
 
   function moveFrog(dir) {
     if (dir === "up") frog.y -= LANE_H;
-    else if (dir === "down") frog.y = Math.min(canvas.height - LANE_H / 2 - FROG_SIZE / 2, frog.y + LANE_H);
+    else if (dir === "down") frog.y = Math.min(getBottomY(), frog.y + LANE_H);
     else if (dir === "left") frog.x = Math.max(0, frog.x - LANE_H);
     else if (dir === "right") frog.x = Math.min(canvas.width - FROG_SIZE, frog.x + LANE_H);
     // reached top?
