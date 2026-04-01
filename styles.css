@@ -38,7 +38,7 @@ body {
 .site-share {
   position: fixed;
   top: 1rem;
-  right: clamp(1rem, 2vw, 1.6rem);
+  right: calc(clamp(1rem, 2vw, 1.6rem) + 72px);
   z-index: 4;
   display: flex;
   gap: 0.6rem;
@@ -625,6 +625,14 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 1.2rem;
+}
+
+.failure-img {
+  width: 100%;
+  border-radius: 0.9rem;
+  margin-bottom: 0.75rem;
+  object-fit: cover;
+  max-height: 200px;
 }
 
 .failure-card {

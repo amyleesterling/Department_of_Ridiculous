@@ -57,12 +57,14 @@ function handleRequest_(e, method) {
       return json_({ ok: true, status: 200, healthy: true });
     }
 
-    if (method === "GET" && route === "api/emergencies") {
+    const action = normalizeWhitespace_(e && e.parameter && e.parameter.action);
+
+    if (route === "api/emergencies" && (method === "GET" && action !== "create")) {
       const limit = clamp_(1, Number((e && e.parameter && e.parameter.limit) || 50), 200);
       return respond_(e, { ok: true, status: 200, emergencies: listEmergencies_(limit) });
     }
 
-    if (method === "POST" && route === "api/emergencies") {
+    if (route === "api/emergencies" && (method === "POST" || action === "create")) {
       const body = normalizeEmergencyPayload_(parseJsonBody_(e));
       const validationError = validateEmergencyPayload_(body);
       if (validationError) {
@@ -80,7 +82,7 @@ function handleRequest_(e, method) {
     }
 
     const bangMatch = route.match(/^api\/emergencies\/([^/]+)\/bang$/);
-    if (method === "POST" && bangMatch) {
+    if (bangMatch && (method === "POST" || action === "bang")) {
       const body = parseJsonBody_(e);
       const sourceTokenHash = hashToken_(normalizeWhitespace_(body && body.sourceToken));
       if (!sourceTokenHash) {

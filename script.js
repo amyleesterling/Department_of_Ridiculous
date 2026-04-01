@@ -262,14 +262,20 @@ async function fetchSharedEmergencies() {
 async function createSharedEmergency(entry) {
   if (!API_BASE) return null;
   if (USE_APPS_SCRIPT_BRIDGE) {
-    await postAppsScriptForm({
+    const payload = await fetchAppsScriptJsonp({
       action: "create",
       name: entry.name,
       title: entry.title,
       details: entry.details,
       sourceToken,
     });
-    await wait(900);
+    if (payload && payload.ok === false) {
+      const error = new Error(payload.error || "Failed to create emergency.");
+      error.status = payload.status || 500;
+      throw error;
+    }
+    if (payload && payload.emergency) return payload.emergency;
+    await wait(600);
     const emergencies = await fetchSharedEmergencies();
     return findLatestMatchingEmergency(emergencies || [], entry);
   }
@@ -283,12 +289,19 @@ async function createSharedEmergency(entry) {
 
 async function bangSharedEmergency(id) {
   if (USE_APPS_SCRIPT_BRIDGE) {
-    await postAppsScriptForm({
+    const payload = await fetchAppsScriptJsonp({
       action: "bang",
       id,
       sourceToken,
     });
-    await wait(700);
+    if (payload && payload.ok === false) {
+      const error = new Error(payload.error || "Failed to register reaction.");
+      error.status = payload.status || 500;
+      if (payload.emergency) error.emergency = payload.emergency;
+      throw error;
+    }
+    if (payload && payload.emergency) return payload.emergency;
+    await wait(500);
     const emergencies = await fetchSharedEmergencies();
     return (emergencies || []).find((entry) => entry.id === id) || null;
   }
