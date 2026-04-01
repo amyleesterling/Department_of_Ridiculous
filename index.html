@@ -9,10 +9,11 @@
     content="An aggressively unnecessary website featuring absurd emergencies, disco toggles, and elite nonsense."
   />
   <meta name="ridiculous-api-base" content="https://script.google.com/macros/s/AKfycbwpkrCOWhMkvRDjUJJJDeFjCmDTuaGWNliBxJXMLNtxaUfazgJGsu6dvUUOXMuXiDZB/exec" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="./styles.css" />
@@ -191,6 +192,73 @@
       </div>
     </section>
 
+    <section class="tetris-arena" data-chaos-box>
+      <div class="tetris-header">
+        <div>
+          <p class="panel-kicker" data-chaos-text>Recreational compliance exercise</p>
+          <h2 data-chaos-text>Bureaucratic Tetris</h2>
+          <p class="tetris-subtitle" data-chaos-text>Stack the regulations. Clear the red tape. Words rearrange as institutional gravity takes hold.</p>
+        </div>
+        <div class="tetris-scoreboard">
+          <div class="tetris-stat"><span class="tetris-stat-label">Efficiency Pts</span><span class="tetris-stat-value" id="tetrisScore">0</span></div>
+          <div class="tetris-stat"><span class="tetris-stat-label">Lines Filed</span><span class="tetris-stat-value" id="tetrisLines">0</span></div>
+          <div class="tetris-stat"><span class="tetris-stat-label">Level</span><span class="tetris-stat-value" id="tetrisLevel">1</span></div>
+        </div>
+      </div>
+      <div class="tetris-body">
+        <div class="tetris-board-wrap">
+          <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+          <div class="tetris-overlay hidden" id="tetrisOverlay">
+            <div class="tetris-overlay-text" id="tetrisOverlayText">Press Start</div>
+          </div>
+        </div>
+        <div class="tetris-sidebar">
+          <div class="tetris-next-wrap">
+            <p class="tetris-side-label">Next Regulation</p>
+            <canvas id="tetrisNextCanvas" width="120" height="120"></canvas>
+          </div>
+          <div class="tetris-controls-info">
+            <p class="tetris-side-label">Approved Controls</p>
+            <div class="tetris-key-list">
+              <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> Move</span>
+              <span><kbd>&uarr;</kbd> Rotate</span>
+              <span><kbd>&darr;</kbd> Soft drop</span>
+              <span><kbd>Space</kbd> Hard drop</span>
+            </div>
+          </div>
+          <button class="loud-button tetris-start-btn" id="tetrisStartBtn">Begin Compliance</button>
+          <button class="loud-button undo tetris-pause-btn hidden" id="tetrisPauseBtn">Pause Proceedings</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-27b" data-chaos-box>
+      <div class="form-27b-header">
+        <div>
+          <p class="panel-kicker" data-chaos-text>Mandatory filing requirement</p>
+          <h2 data-chaos-text>Official Nonsense Form 27-B</h2>
+          <p class="form-27b-note" data-chaos-text>All fields are simultaneously required and meaningless. Text reflows in real-time as institutional gravity warps around your responses.</p>
+        </div>
+      </div>
+      <div class="form-27b-body">
+        <canvas id="form27bCanvas" width="800" height="500"></canvas>
+        <div class="form-27b-inputs">
+          <label class="form-27b-field">
+            <span>Full Ceremonial Name</span>
+            <input id="form27bName" type="text" placeholder="Deputy Glitter McMuffin III" maxlength="40" />
+          </label>
+          <label class="form-27b-field">
+            <span>Reason for Existing</span>
+            <input id="form27bReason" type="text" placeholder="Mandatory paperwork enthusiasm" maxlength="60" />
+          </label>
+          <label class="form-27b-field">
+            <span>Emergency you wish to declare</span>
+            <textarea id="form27bEmergency" rows="3" placeholder="The staplers have gained sentience and are demanding union representation..." maxlength="200"></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
+
     <section class="manifesto" data-chaos-box>
       <p class="panel-kicker" data-chaos-text>Institutional philosophy</p>
       <h2 data-chaos-text>We reject minimalism in favor of heroic overreaction.</h2>
@@ -285,5 +353,7 @@
   </div>
 
   <script src="./script.js?v=20260331c"></script>
+  <script src="./tetris.js?v=20260401a"></script>
+  <script src="./pacman.js?v=20260401a"></script>
 </body>
 </html>

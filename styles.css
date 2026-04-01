@@ -5,7 +5,7 @@
   --ink-soft: rgba(20, 33, 61, 0.72);
   --paper: rgba(255, 249, 239, 0.74);
   --panel-border: rgba(20, 33, 61, 0.12);
-  --lime: #d8ff3e;
+  --lime: #c8e64e;
   --cyan: #53e0d7;
   --red: #ff3b30;
   --shadow: 0 24px 60px rgba(20, 33, 61, 0.16);
@@ -28,7 +28,7 @@ body {
   font-family: "Space Grotesk", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(216, 255, 62, 0.55), transparent 30%),
+    radial-gradient(circle at top left, rgba(200, 230, 78, 0.45), transparent 30%),
     radial-gradient(circle at 80% 20%, rgba(83, 224, 215, 0.45), transparent 32%),
     linear-gradient(135deg, #fdf6e8 0%, #ffd59d 45%, #ff8e5e 100%);
   overflow-x: hidden;
@@ -96,6 +96,8 @@ body.disco-active .cabinet-card,
 body.disco-active .manifesto,
 body.disco-active .emergency-ledger,
 body.disco-active .infrastructure-failures,
+body.disco-active .tetris-arena,
+body.disco-active .form-27b,
 body.disco-active .annex-card {
   background: rgba(16, 17, 38, 0.76);
   border-color: rgba(255, 255, 255, 0.08);
@@ -259,12 +261,19 @@ body.government-mode .disco-shell {
   box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.16);
 }
 
-h1,
-h2,
-h3 {
+h1 {
   margin: 0;
   font-family: "Bungee", cursive;
   line-height: 0.95;
+  text-transform: uppercase;
+}
+
+h2,
+h3 {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  line-height: 1;
   text-transform: uppercase;
 }
 
@@ -280,8 +289,9 @@ h1 {
 .lede {
   max-width: 44rem;
   margin: 1.2rem 0 0;
-  font-size: clamp(1.08rem, 2vw, 1.45rem);
-  line-height: 1.5;
+  font-family: "Crimson Pro", serif;
+  font-size: clamp(1.18rem, 2.2vw, 1.55rem);
+  line-height: 1.55;
   color: var(--ink-soft);
 }
 
@@ -324,7 +334,7 @@ button {
 .primary-button {
   color: var(--ink);
   background: var(--lime);
-  box-shadow: 0 16px 30px rgba(216, 255, 62, 0.34);
+  box-shadow: 0 16px 30px rgba(200, 230, 78, 0.34);
 }
 
 .ghost-button {
@@ -367,7 +377,8 @@ button {
 
 .status-value {
   margin-top: 0.5rem;
-  font-family: "Bungee", cursive;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
   font-size: clamp(2rem, 5vw, 3.4rem);
   line-height: 1;
 }
@@ -622,8 +633,10 @@ button {
 
 .failure-card p {
   margin: 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
   color: var(--ink-soft);
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .ledger-header {
@@ -679,13 +692,13 @@ button {
 
 .ledger-card.is-seeded {
   background:
-    radial-gradient(circle at top right, rgba(216, 255, 62, 0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.18), transparent 32%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(246, 238, 208, 0.72));
 }
 
 .ledger-card.is-focused {
   border-color: rgba(20, 33, 61, 0.42);
-  box-shadow: 0 0 0 0.22rem rgba(216, 255, 62, 0.26), 0 20px 38px rgba(20, 33, 61, 0.16);
+  box-shadow: 0 0 0 0.22rem rgba(200, 230, 78, 0.26), 0 20px 38px rgba(20, 33, 61, 0.16);
 }
 
 .ledger-card h3 {
@@ -790,7 +803,7 @@ button {
 }
 
 .mini-button.bang-button {
-  background: linear-gradient(135deg, rgba(216, 255, 62, 0.94), rgba(255, 217, 61, 0.92));
+  background: linear-gradient(135deg, rgba(200, 230, 78, 0.94), rgba(255, 217, 61, 0.92));
   border-color: rgba(20, 33, 61, 0.18);
 }
 
@@ -802,6 +815,56 @@ button {
 
 .mini-button.share-button {
   background: rgba(20, 33, 61, 0.08);
+}
+
+.ledger-reactions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  background: rgba(255, 249, 239, 0.7);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.reaction-btn:hover:not([disabled]) {
+  transform: translateY(-1px) scale(1.06);
+  box-shadow: 0 6px 14px rgba(20, 33, 61, 0.12);
+  background: rgba(255, 240, 210, 0.9);
+}
+
+.reaction-btn:active:not([disabled]) {
+  transform: scale(0.95);
+}
+
+.reaction-btn.reacted {
+  background: linear-gradient(135deg, rgba(200, 230, 78, 0.3), rgba(255, 217, 61, 0.25));
+  border-color: rgba(200, 230, 78, 0.4);
+}
+
+.reaction-btn[disabled] {
+  cursor: default;
+}
+
+.reaction-emoji {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.reaction-count {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink);
+  min-width: 0.5rem;
 }
 
 .ledger-empty {
@@ -822,7 +885,7 @@ button {
   width: 9rem;
   height: 9rem;
   border-radius: 50%;
-  background: rgba(216, 255, 62, 0.18);
+  background: rgba(200, 230, 78, 0.18);
 }
 
 .cabinet-card h3 {
@@ -835,8 +898,9 @@ button {
   position: relative;
   z-index: 1;
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.08rem;
+  line-height: 1.65;
   color: var(--ink-soft);
 }
 
@@ -865,7 +929,8 @@ button {
 }
 
 .metric-list strong {
-  font-family: "Bungee", cursive;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
   font-size: 1.5rem;
 }
 
@@ -951,7 +1016,7 @@ button {
   border-radius: 1.7rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background:
-    radial-gradient(circle at top right, rgba(216, 255, 62, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.18), transparent 30%),
     linear-gradient(145deg, rgba(255, 250, 241, 0.96), rgba(255, 229, 188, 0.94));
   box-shadow: 0 24px 80px rgba(20, 33, 61, 0.28);
 }
@@ -1444,6 +1509,336 @@ button {
   }
 }
 
+/* ─── Tetris Arena ─── */
+.tetris-arena {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.7rem;
+  backdrop-filter: blur(16px);
+  background:
+    radial-gradient(circle at bottom left, rgba(83, 224, 215, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(200, 230, 78, 0.12), transparent 28%),
+    linear-gradient(145deg, rgba(255, 249, 239, 0.82), rgba(255, 232, 195, 0.76));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+}
+
+.tetris-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tetris-header h2 {
+  max-width: 14ch;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.tetris-subtitle {
+  max-width: 36rem;
+  margin: 0.6rem 0 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.tetris-scoreboard {
+  display: flex;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.tetris-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.06);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-stat-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tetris-stat-value {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.tetris-body {
+  display: flex;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.tetris-board-wrap {
+  position: relative;
+  width: 300px;
+  height: 600px;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 2px solid rgba(20, 33, 61, 0.14);
+  box-shadow: 0 16px 40px rgba(20, 33, 61, 0.14);
+}
+
+.tetris-board-wrap canvas {
+  display: block;
+}
+
+.tetris-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 33, 61, 0.72);
+  backdrop-filter: blur(6px);
+  z-index: 1;
+}
+
+.tetris-overlay.hidden {
+  display: none;
+}
+
+.tetris-overlay-text {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff8ef;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.tetris-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 160px;
+}
+
+.tetris-next-wrap {
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.04);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-next-wrap canvas {
+  display: block;
+  border-radius: 0.6rem;
+}
+
+.tetris-side-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.5rem;
+}
+
+.tetris-controls-info {
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.04);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-key-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tetris-key-list span {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.tetris-key-list kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  padding: 0.2rem 0.4rem;
+  margin-right: 0.25rem;
+  border-radius: 0.35rem;
+  background: rgba(20, 33, 61, 0.08);
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.tetris-start-btn {
+  background: var(--lime);
+}
+
+.tetris-pause-btn.hidden {
+  display: none;
+}
+
+/* ─── Form 27-B ─── */
+.form-27b {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.7rem;
+  backdrop-filter: blur(16px);
+  background:
+    radial-gradient(circle at top left, rgba(255, 59, 48, 0.06), transparent 28%),
+    linear-gradient(145deg, rgba(255, 250, 243, 0.88), rgba(255, 241, 218, 0.8));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+}
+
+.form-27b-header {
+  margin-bottom: 1rem;
+}
+
+.form-27b-header h2 {
+  max-width: 16ch;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.form-27b-note {
+  max-width: 42rem;
+  margin: 0.6rem 0 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.form-27b-body {
+  display: flex;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.form-27b-body canvas {
+  display: block;
+  border-radius: 1rem;
+  border: 1px solid rgba(20, 33, 61, 0.1);
+  box-shadow: 0 12px 30px rgba(20, 33, 61, 0.1);
+  flex-shrink: 0;
+}
+
+.form-27b-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  min-width: 220px;
+}
+
+.form-27b-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-27b-field span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.form-27b-field input,
+.form-27b-field textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(20, 33, 61, 0.14);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font: inherit;
+  font-family: "Crimson Pro", serif;
+  font-size: 1rem;
+}
+
+.form-27b-field textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+/* ─── PAC-MAN Overlay ─── */
+.pacman-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.pacman-shell.hidden {
+  display: none;
+}
+
+.pacman-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.pacman-card {
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem;
+  border-radius: 1.7rem;
+  background:
+    radial-gradient(circle at top right, rgba(255, 217, 61, 0.12), transparent 30%),
+    linear-gradient(145deg, rgba(20, 33, 61, 0.96), rgba(10, 14, 26, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  color: #fff8ef;
+}
+
+.pacman-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pacman-header h2 {
+  font-family: "Bungee", cursive;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #ffd93d;
+}
+
+.pacman-header .panel-kicker {
+  color: rgba(255, 248, 239, 0.5);
+}
+
+.pacman-header .composer-close {
+  color: #fff8ef;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pacman-canvas {
+  display: block;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 body.government-mode *,
 body.government-mode *::before,
 body.government-mode *::after {
@@ -1485,6 +1880,20 @@ body.government-mode .annex-card {
 
 body.government-mode .status-grid > div {
   margin-bottom: 0.7rem;
+}
+
+body.government-mode .tetris-arena,
+body.government-mode .form-27b {
+  max-width: none;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid #8c8c8c;
+}
+
+body.government-mode .tetris-body,
+body.government-mode .form-27b-body {
+  flex-direction: column;
 }
 
 body.government-mode h1,
@@ -1652,6 +2061,31 @@ body.government-mode .composer-backdrop {
 
   .status-panel {
     max-width: 32rem;
+  }
+
+  .tetris-header {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .tetris-body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tetris-scoreboard {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-27b-body {
+    flex-direction: column;
+  }
+
+  .form-27b-body canvas {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
   }
 }
 
