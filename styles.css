@@ -1233,10 +1233,8 @@ button {
 }
 
 .stamp-launcher {
-  position: fixed;
-  right: 1.25rem;
-  bottom: 1.2rem;
-  z-index: 4;
+  display: block;
+  margin: 0 auto 1rem;
   padding: 0.78rem 1rem;
   border: 1px solid rgba(20, 33, 61, 0.18);
   border-radius: 999px;
