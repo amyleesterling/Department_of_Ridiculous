@@ -327,23 +327,20 @@ function renderCitizenEmergencies() {
     const card = document.createElement("article");
     card.className = `ledger-card${entry.seeded ? " is-seeded" : ""}`;
     card.id = `emergency-${entry.id}`;
-    const bangLabel = bangHistory[entry.id] ? `! Counted (${entry.bangs})` : `! This (${entry.bangs})`;
+    const reacted = bangHistory[entry.id];
     card.innerHTML = `
       <div class="ledger-topline">
         <div class="ledger-meta">Filed by ${entry.name} on ${formatEmergencyTimestamp(entry.createdAt)}</div>
-        <div class="ledger-bang-group">
-          <div class="ledger-bang-count">${entry.bangs} public !</div>
-          <button type="button" class="mini-button bang-button" data-action="bang" data-emergency-id="${entry.id}" ${bangHistory[entry.id] ? "disabled" : ""}>${bangLabel}</button>
-        </div>
       </div>
       <h3></h3>
       <div class="ledger-reporter"></div>
       <p></p>
-      <div class="ledger-actions">
-        <div class="ledger-action-group">
-          <button type="button" class="mini-button share-button" data-action="share" data-emergency-id="${entry.id}">Share</button>
-          <button type="button" class="mini-button share-button" data-action="copy-link" data-emergency-id="${entry.id}">Copy Link</button>
-        </div>
+      <div class="ledger-reactions">
+        <button type="button" class="reaction-btn ${reacted ? "reacted" : ""}" data-action="bang" data-emergency-id="${entry.id}" ${reacted ? "disabled" : ""}>
+          <span class="reaction-emoji">&#x26A0;&#xFE0F;</span>
+          <span class="reaction-count">${entry.bangs || ""}</span>
+        </button>
+        <button type="button" class="mini-button share-button" data-action="share" data-emergency-id="${entry.id}">Share</button>
       </div>
     `;
     card.querySelector("h3").textContent = entry.title;

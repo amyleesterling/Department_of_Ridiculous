@@ -817,6 +817,56 @@ button {
   background: rgba(20, 33, 61, 0.08);
 }
 
+.ledger-reactions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  background: rgba(255, 249, 239, 0.7);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.reaction-btn:hover:not([disabled]) {
+  transform: translateY(-1px) scale(1.06);
+  box-shadow: 0 6px 14px rgba(20, 33, 61, 0.12);
+  background: rgba(255, 240, 210, 0.9);
+}
+
+.reaction-btn:active:not([disabled]) {
+  transform: scale(0.95);
+}
+
+.reaction-btn.reacted {
+  background: linear-gradient(135deg, rgba(200, 230, 78, 0.3), rgba(255, 217, 61, 0.25));
+  border-color: rgba(200, 230, 78, 0.4);
+}
+
+.reaction-btn[disabled] {
+  cursor: default;
+}
+
+.reaction-emoji {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.reaction-count {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink);
+  min-width: 0.5rem;
+}
+
 .ledger-empty {
   margin: 0.2rem 0 0;
   color: var(--ink-soft);
@@ -1724,6 +1774,69 @@ button {
 .form-27b-field textarea {
   resize: vertical;
   min-height: 5rem;
+}
+
+/* ─── PAC-MAN Overlay ─── */
+.pacman-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.pacman-shell.hidden {
+  display: none;
+}
+
+.pacman-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.pacman-card {
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem;
+  border-radius: 1.7rem;
+  background:
+    radial-gradient(circle at top right, rgba(255, 217, 61, 0.12), transparent 30%),
+    linear-gradient(145deg, rgba(20, 33, 61, 0.96), rgba(10, 14, 26, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  color: #fff8ef;
+}
+
+.pacman-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pacman-header h2 {
+  font-family: "Bungee", cursive;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #ffd93d;
+}
+
+.pacman-header .panel-kicker {
+  color: rgba(255, 248, 239, 0.5);
+}
+
+.pacman-header .composer-close {
+  color: #fff8ef;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pacman-canvas {
+  display: block;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 body.government-mode *,
