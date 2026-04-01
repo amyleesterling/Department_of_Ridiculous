@@ -286,7 +286,9 @@ body.government-mode .disco-shell {
 
 h1 {
   margin: 0;
-  font-family: "Bungee", cursive;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   line-height: 0.95;
   text-transform: uppercase;
 }
@@ -1051,6 +1053,19 @@ button {
     radial-gradient(circle at top right, rgba(212, 160, 23, 0.18), transparent 30%),
     linear-gradient(145deg, rgba(255, 250, 241, 0.96), rgba(255, 229, 188, 0.94));
   box-shadow: 0 24px 80px rgba(20, 33, 61, 0.28);
+}
+
+.composer-crest {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(20, 33, 61, 0.18);
+  object-fit: contain;
+  z-index: 2;
 }
 
 .composer-header {
