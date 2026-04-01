@@ -96,6 +96,8 @@ body.disco-active .cabinet-card,
 body.disco-active .manifesto,
 body.disco-active .emergency-ledger,
 body.disco-active .infrastructure-failures,
+body.disco-active .tetris-arena,
+body.disco-active .form-27b,
 body.disco-active .annex-card {
   background: rgba(16, 17, 38, 0.76);
   border-color: rgba(255, 255, 255, 0.08);
@@ -259,12 +261,19 @@ body.government-mode .disco-shell {
   box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.16);
 }
 
-h1,
-h2,
-h3 {
+h1 {
   margin: 0;
   font-family: "Bungee", cursive;
   line-height: 0.95;
+  text-transform: uppercase;
+}
+
+h2,
+h3 {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  line-height: 1;
   text-transform: uppercase;
 }
 
@@ -280,8 +289,9 @@ h1 {
 .lede {
   max-width: 44rem;
   margin: 1.2rem 0 0;
-  font-size: clamp(1.08rem, 2vw, 1.45rem);
-  line-height: 1.5;
+  font-family: "Crimson Pro", serif;
+  font-size: clamp(1.18rem, 2.2vw, 1.55rem);
+  line-height: 1.55;
   color: var(--ink-soft);
 }
 
@@ -367,7 +377,8 @@ button {
 
 .status-value {
   margin-top: 0.5rem;
-  font-family: "Bungee", cursive;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
   font-size: clamp(2rem, 5vw, 3.4rem);
   line-height: 1;
 }
@@ -622,8 +633,10 @@ button {
 
 .failure-card p {
   margin: 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
   color: var(--ink-soft);
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .ledger-header {
@@ -835,8 +848,9 @@ button {
   position: relative;
   z-index: 1;
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.08rem;
+  line-height: 1.65;
   color: var(--ink-soft);
 }
 
@@ -865,7 +879,8 @@ button {
 }
 
 .metric-list strong {
-  font-family: "Bungee", cursive;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
   font-size: 1.5rem;
 }
 
@@ -1444,6 +1459,273 @@ button {
   }
 }
 
+/* ─── Tetris Arena ─── */
+.tetris-arena {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.7rem;
+  backdrop-filter: blur(16px);
+  background:
+    radial-gradient(circle at bottom left, rgba(83, 224, 215, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(216, 255, 62, 0.12), transparent 28%),
+    linear-gradient(145deg, rgba(255, 249, 239, 0.82), rgba(255, 232, 195, 0.76));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+}
+
+.tetris-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tetris-header h2 {
+  max-width: 14ch;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.tetris-subtitle {
+  max-width: 36rem;
+  margin: 0.6rem 0 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.tetris-scoreboard {
+  display: flex;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.tetris-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.06);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-stat-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tetris-stat-value {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.tetris-body {
+  display: flex;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.tetris-board-wrap {
+  position: relative;
+  width: 300px;
+  height: 600px;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 2px solid rgba(20, 33, 61, 0.14);
+  box-shadow: 0 16px 40px rgba(20, 33, 61, 0.14);
+}
+
+.tetris-board-wrap canvas {
+  display: block;
+}
+
+.tetris-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 33, 61, 0.72);
+  backdrop-filter: blur(6px);
+  z-index: 1;
+}
+
+.tetris-overlay.hidden {
+  display: none;
+}
+
+.tetris-overlay-text {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff8ef;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.tetris-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 160px;
+}
+
+.tetris-next-wrap {
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.04);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-next-wrap canvas {
+  display: block;
+  border-radius: 0.6rem;
+}
+
+.tetris-side-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.5rem;
+}
+
+.tetris-controls-info {
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: rgba(20, 33, 61, 0.04);
+  border: 1px solid rgba(20, 33, 61, 0.08);
+}
+
+.tetris-key-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tetris-key-list span {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.tetris-key-list kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  padding: 0.2rem 0.4rem;
+  margin-right: 0.25rem;
+  border-radius: 0.35rem;
+  background: rgba(20, 33, 61, 0.08);
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.tetris-start-btn {
+  background: var(--lime);
+}
+
+.tetris-pause-btn.hidden {
+  display: none;
+}
+
+/* ─── Form 27-B ─── */
+.form-27b {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.7rem;
+  backdrop-filter: blur(16px);
+  background:
+    radial-gradient(circle at top left, rgba(255, 59, 48, 0.06), transparent 28%),
+    linear-gradient(145deg, rgba(255, 250, 243, 0.88), rgba(255, 241, 218, 0.8));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow);
+}
+
+.form-27b-header {
+  margin-bottom: 1rem;
+}
+
+.form-27b-header h2 {
+  max-width: 16ch;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.form-27b-note {
+  max-width: 42rem;
+  margin: 0.6rem 0 0;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.form-27b-body {
+  display: flex;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.form-27b-body canvas {
+  display: block;
+  border-radius: 1rem;
+  border: 1px solid rgba(20, 33, 61, 0.1);
+  box-shadow: 0 12px 30px rgba(20, 33, 61, 0.1);
+  flex-shrink: 0;
+}
+
+.form-27b-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  min-width: 220px;
+}
+
+.form-27b-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-27b-field span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.form-27b-field input,
+.form-27b-field textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(20, 33, 61, 0.14);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font: inherit;
+  font-family: "Crimson Pro", serif;
+  font-size: 1rem;
+}
+
+.form-27b-field textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
 body.government-mode *,
 body.government-mode *::before,
 body.government-mode *::after {
@@ -1485,6 +1767,20 @@ body.government-mode .annex-card {
 
 body.government-mode .status-grid > div {
   margin-bottom: 0.7rem;
+}
+
+body.government-mode .tetris-arena,
+body.government-mode .form-27b {
+  max-width: none;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid #8c8c8c;
+}
+
+body.government-mode .tetris-body,
+body.government-mode .form-27b-body {
+  flex-direction: column;
 }
 
 body.government-mode h1,
@@ -1652,6 +1948,31 @@ body.government-mode .composer-backdrop {
 
   .status-panel {
     max-width: 32rem;
+  }
+
+  .tetris-header {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .tetris-body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tetris-scoreboard {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-27b-body {
+    flex-direction: column;
+  }
+
+  .form-27b-body canvas {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
   }
 }
 
