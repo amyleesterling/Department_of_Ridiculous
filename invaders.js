@@ -114,9 +114,11 @@
     if (gameState === "dead") {
       ctx.fillStyle = "rgba(10,14,26,0.75)"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = "#c41e3a"; ctx.font = "bold 24px 'Outfit', sans-serif"; ctx.textAlign = "center";
-      ctx.fillText("BUDGET BREACH", W / 2, H / 2 - 10);
+      ctx.fillText("BUDGET BREACH", W / 2, H / 2 - 18);
       ctx.fillStyle = "#fff"; ctx.font = "13px 'Outfit', sans-serif";
-      ctx.fillText("$" + score + " denied — click Start to retry", W / 2, H / 2 + 14);
+      ctx.fillText("$" + score + " denied — the Strait of Hormuz remains closed.", W / 2, H / 2 + 6);
+      ctx.font = "11px 'Outfit', sans-serif"; ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.fillText("Gas is now $" + (4.29 + score * 0.03).toFixed(2) + "/gal. The Department sends its thoughts.", W / 2, H / 2 + 24);
     }
     if (gameState === "win") {
       ctx.fillStyle = "rgba(10,14,26,0.75)"; ctx.fillRect(0, 0, W, H);

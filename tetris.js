@@ -67,10 +67,19 @@
     const localY = screenY - boardRect.y;
     const row = Math.floor(localY / CELL);
     if (row < 0 || row >= ROWS) return [];
+    // build a merged view of locked cells + current falling piece
+    const rowCells = new Array(COLS);
+    for (let c = 0; c < COLS; c++) rowCells[c] = board[row][c] !== null;
+    if (current) {
+      current.cells.forEach(([cx, cy]) => {
+        const nx = cx + current.x, ny = cy + current.y;
+        if (ny === row && nx >= 0 && nx < COLS) rowCells[nx] = true;
+      });
+    }
     const ranges = [];
     let inBlock = false, startC = 0;
     for (let c = 0; c <= COLS; c++) {
-      const filled = c < COLS && board[row][c] !== null;
+      const filled = c < COLS && rowCells[c];
       if (filled && !inBlock) { inBlock = true; startC = c; }
       if (!filled && inBlock) {
         ranges.push({
