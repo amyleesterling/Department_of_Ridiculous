@@ -36,13 +36,17 @@
     const value = 0.5 + Math.random() * 2.5;
     budget = Math.min(99.4, budget + value);
 
-    // spawn coin particle from tap
+    // spawn coin particle — arcs toward the bureaucrat's pocket
+    const pocketX = W / 2 + 18; // jacket breast pocket
+    const pocketY = 228;        // chest height
+    const startX = W / 2 + (Math.random() - 0.5) * 200;
+    const startY = H - 60;
     coins.push({
-      x: W / 2 + (Math.random() - 0.5) * 120,
-      y: H - 80,
-      vy: -3 - Math.random() * 4,
-      vx: (Math.random() - 0.5) * 3,
-      life: 1,
+      x: startX, y: startY,
+      startX, startY,
+      targetX: pocketX + (Math.random() - 0.5) * 10,
+      targetY: pocketY + (Math.random() - 0.5) * 8,
+      t: 0, // 0→1 animation progress
       label: COIN_LABELS[Math.floor(Math.random() * COIN_LABELS.length)],
     });
 
@@ -63,14 +67,15 @@
     shakeX *= 0.9;
     shakeY *= 0.9;
 
-    // update coin particles
+    // update coin particles — arc toward pocket
     coins.forEach(c => {
-      c.x += c.vx;
-      c.y += c.vy;
-      c.vy += 0.15; // gravity
-      c.life -= 0.015;
+      c.t = Math.min(1, c.t + dt * 0.0025);
+      const ease = c.t * c.t * (3 - 2 * c.t); // smoothstep
+      const arcY = -180 * Math.sin(c.t * Math.PI); // parabolic arc upward
+      c.x = c.startX + (c.targetX - c.startX) * ease;
+      c.y = c.startY + (c.targetY - c.startY) * ease + arcY;
     });
-    coins = coins.filter(c => c.life > 0);
+    coins = coins.filter(c => c.t < 1);
 
     // idle coin drift toward bureaucrat
     if (gameState === "playing" && budget > 0) {
@@ -140,6 +145,19 @@
     ctx.lineTo(cx + 8, cy + 8);
     ctx.lineTo(cx + 6, cy + 14);
     ctx.lineTo(cx - 6, cy + 14);
+    ctx.closePath();
+    ctx.fill();
+
+    // breast pocket (coin target)
+    ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(cx + 10, cy + 18, 22, 16, 3); ctx.stroke();
+    // pocket square
+    ctx.fillStyle = tieColor;
+    ctx.beginPath();
+    ctx.moveTo(cx + 14, cy + 18);
+    ctx.lineTo(cx + 18, cy + 24);
+    ctx.lineTo(cx + 22, cy + 18);
     ctx.closePath();
     ctx.fill();
 
@@ -237,15 +255,17 @@
       ctx.stroke();
     }
 
-    // floating coin particles
+    // flying coin particles — arc toward pocket
     coins.forEach(c => {
-      ctx.globalAlpha = Math.max(0, c.life);
+      const fade = c.t > 0.8 ? 1 - (c.t - 0.8) / 0.2 : 1; // fade out near pocket
+      const scale = 1 - c.t * 0.4; // shrink as it lands
+      ctx.globalAlpha = fade;
       ctx.fillStyle = "#d4a017";
       ctx.beginPath();
-      ctx.arc(c.x, c.y, 12, 0, Math.PI * 2);
+      ctx.arc(c.x, c.y, 12 * scale, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = "#14213d";
-      ctx.font = "bold 7px 'IBM Plex Mono', monospace";
+      ctx.font = `bold ${Math.round(7 * scale)}px 'IBM Plex Mono', monospace`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(c.label, c.x, c.y);
