@@ -258,8 +258,9 @@
   }
 
   function render(now) {
-    // background text (throttled to when board changes)
-    if (bgDirty) { preparedText = null; renderBgText(); bgDirty = false; }
+    // background text — reflow every frame while running so text wraps around falling piece
+    if (bgDirty) { preparedText = null; bgDirty = false; }
+    if (running || !preparedText) { renderBgText(); }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // semi-transparent board so bg text shows through
