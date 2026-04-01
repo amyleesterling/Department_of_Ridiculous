@@ -208,6 +208,28 @@ body.government-mode .disco-shell {
   z-index: 1;
 }
 
+.site-crest {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 64px;
+  height: 64px;
+  z-index: 5;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(20,33,61,0.12);
+  pointer-events: none;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .site-crest {
+    width: 44px;
+    height: 44px;
+    top: 0.6rem;
+    right: 0.6rem;
+  }
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 24rem);
