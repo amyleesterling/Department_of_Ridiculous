@@ -6,7 +6,8 @@
     const pt = await import("https://esm.sh/@chenglou/pretext@0.0.3");
     ptPrepare = pt.prepareWithSegments;
     ptLayoutNext = pt.layoutNextLine;
-  } catch (e) { console.warn("pretext unavailable, using fallback text"); }
+  } catch (e) { console.warn("pretext unavailable, using fallback text", e); }
+  console.log("pretext loaded:", !!ptPrepare, !!ptLayoutNext);
 
   /* ─── Constants ─── */
   const COLS = 10, ROWS = 20, CELL = 30;
@@ -139,9 +140,18 @@
           // Find contiguous empty column ranges in this row
           const boardRow = Math.floor((y - br.y) / CELL);
           if (boardRow >= 0 && boardRow < ROWS) {
+            // build merged view: locked cells + current falling piece
+            const mergedRow = new Array(COLS);
+            for (let mc = 0; mc < COLS; mc++) mergedRow[mc] = board[boardRow]?.[mc] !== null;
+            if (current) {
+              current.cells.forEach(([cx, cy]) => {
+                const nx = cx + current.x, ny = cy + current.y;
+                if (ny === boardRow && nx >= 0 && nx < COLS) mergedRow[nx] = true;
+              });
+            }
             let emptyStart = -1;
             for (let c = 0; c <= COLS; c++) {
-              const empty = c < COLS && board[boardRow]?.[c] === null;
+              const empty = c < COLS && !mergedRow[c];
               if (empty && emptyStart < 0) emptyStart = c;
               if ((!empty || c === COLS) && emptyStart >= 0) {
                 const ex = br.x + emptyStart * CELL + 2;
@@ -167,19 +177,15 @@
         y += LH;
       }
     } else {
-      // ─── Fallback: simple word-wrap ───
+      // ─── Fallback: simple word-wrap with reflow around board + pieces ───
       bgCtx.font = FONT;
       bgCtx.fillStyle = "rgba(20,33,61,0.14)";
       bgCtx.textAlign = "left";
       const words = CONSTITUTION.split(" ");
       let wi = 0, y = PAD + 11;
-      while (y < h - PAD && wi < words.length) {
-        let maxW = w - PAD * 2;
-        let startX = PAD;
-        if (y >= br.y && y < br.y + br.h) {
-          maxW = Math.max(0, br.x - PAD * 2);
-          if (maxW < 40) { y += LH; continue; }
-        }
+
+      function fillLine(startX, maxW) {
+        if (maxW < 30) return;
         let line = "";
         while (wi < words.length) {
           const test = line + (line ? " " : "") + words[wi];
@@ -187,7 +193,44 @@
           line = test; wi++;
         }
         if (line) bgCtx.fillText(line, startX, y);
+      }
+
+      while (y < h - PAD && wi < words.length) {
+        const inBoardY = y >= br.y && y < br.y + br.h;
+        if (inBoardY) {
+          // left of board
+          fillLine(PAD, br.x - PAD * 2);
+          // right of board
+          const rightX = br.x + br.w + PAD;
+          fillLine(rightX, w - rightX - PAD);
+          // inside empty board columns
+          const boardRow = Math.floor((y - br.y) / CELL);
+          if (boardRow >= 0 && boardRow < ROWS) {
+            const mergedRow = new Array(COLS);
+            for (let mc = 0; mc < COLS; mc++) mergedRow[mc] = board[boardRow]?.[mc] !== null;
+            if (current) {
+              current.cells.forEach(([cx, cy]) => {
+                const nx = cx + current.x, ny = cy + current.y;
+                if (ny === boardRow && nx >= 0 && nx < COLS) mergedRow[nx] = true;
+              });
+            }
+            let emptyStart = -1;
+            for (let c = 0; c <= COLS; c++) {
+              const empty = c < COLS && !mergedRow[c];
+              if (empty && emptyStart < 0) emptyStart = c;
+              if ((!empty || c === COLS) && emptyStart >= 0) {
+                const ex = br.x + emptyStart * CELL + 2;
+                const ew = (c - emptyStart) * CELL - 4;
+                fillLine(ex, ew);
+                emptyStart = -1;
+              }
+            }
+          }
+        } else {
+          fillLine(PAD, w - PAD * 2);
+        }
         y += LH;
+        if (wi >= words.length) wi = 0; // loop text
       }
     }
   }
