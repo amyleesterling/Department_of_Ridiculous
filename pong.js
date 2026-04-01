@@ -6,22 +6,24 @@
   const startBtn = document.getElementById("pongStartBtn");
   const W = canvas.width, H = canvas.height;
 
-  const PAD_W = 14, PAD_H = 70, BALL_R = 10;
+  const S = W / 600; // scale factor relative to original 600px design
+  const PAD_W = Math.round(14 * S), PAD_H = Math.round(70 * S), BALL_R = Math.round(10 * S);
+  const BALL_SPEED = 5.5 * S;
   let leftY, rightY, ball, leftScore, rightScore, gameState, rallyCount;
-  let aiSpeed = 2.8;
+  let aiSpeed = 4.5 * S;
 
   function init() {
     leftY = H / 2 - PAD_H / 2;
     rightY = H / 2 - PAD_H / 2;
-    ball = { x: W / 2, y: H / 2, dx: 3.5 * (Math.random() > 0.5 ? 1 : -1), dy: 2 * (Math.random() - 0.5) };
+    ball = { x: W / 2, y: H / 2, dx: BALL_SPEED * (Math.random() > 0.5 ? 1 : -1), dy: 3 * S * (Math.random() - 0.5) };
     leftScore = 0; rightScore = 0; rallyCount = 0;
     gameState = "ready";
   }
 
   function resetBall() {
     ball.x = W / 2; ball.y = H / 2;
-    ball.dx = 3.5 * (ball.dx > 0 ? -1 : 1);
-    ball.dy = 2 * (Math.random() - 0.5);
+    ball.dx = BALL_SPEED * (ball.dx > 0 ? -1 : 1);
+    ball.dy = 3 * S * (Math.random() - 0.5);
     rallyCount = 0;
   }
 
@@ -64,7 +66,8 @@
 
     // cap speed
     const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    if (speed > 8) { ball.dx *= 8 / speed; ball.dy *= 8 / speed; }
+    const maxSpeed = 12 * S;
+    if (speed > maxSpeed) { ball.dx *= maxSpeed / speed; ball.dy *= maxSpeed / speed; }
   }
 
   function render() {
