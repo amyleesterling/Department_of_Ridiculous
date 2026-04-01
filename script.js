@@ -309,7 +309,7 @@ function setChaosContent(element, text) {
 function syncSiteShareLinks() {
   const pageUrl = getPageShareUrl();
   const encodedUrl = encodeURIComponent(pageUrl);
-  const encodedTitle = encodeURIComponent("The Department of Ridiculous Internet");
+  const encodedTitle = encodeURIComponent("The Department of Ridiculous");
   if (shareX) shareX.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
   if (shareFacebook) shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
   if (shareEmail) shareEmail.href = `mailto:?subject=${encodedTitle}&body=${encodeURIComponent(`Take a look at this: ${pageUrl}`)}`;
