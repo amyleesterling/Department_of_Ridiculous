@@ -202,30 +202,24 @@
       </div>
     </section>
 
-    <section class="form-27b" data-chaos-box>
-      <div class="form-27b-header">
+    <section class="citizen-quiz" data-chaos-box>
+      <div class="quiz-header">
         <div>
-          <p class="panel-kicker" data-chaos-text>Mandatory filing requirement</p>
-          <h2 data-chaos-text>Official Nonsense Form 27-B</h2>
-          <p class="form-27b-note" data-chaos-text>All fields are simultaneously required and meaningless. Text reflows in real-time as institutional gravity warps around your responses.</p>
+          <p class="panel-kicker" data-chaos-text>Official classification assessment</p>
+          <h2 data-chaos-text>What Kind of Citizen Are You?</h2>
         </div>
       </div>
-      <div class="form-27b-body">
-        <canvas id="form27bCanvas" width="800" height="500"></canvas>
-        <div class="form-27b-inputs">
-          <label class="form-27b-field">
-            <span>Full Ceremonial Name</span>
-            <input id="form27bName" type="text" placeholder="Deputy Glitter McMuffin III" maxlength="40" />
-          </label>
-          <label class="form-27b-field">
-            <span>Reason for Existing</span>
-            <input id="form27bReason" type="text" placeholder="Mandatory paperwork enthusiasm" maxlength="60" />
-          </label>
-          <label class="form-27b-field">
-            <span>Emergency you wish to declare</span>
-            <textarea id="form27bEmergency" rows="3" placeholder="The staplers have gained sentience and are demanding union representation..." maxlength="200"></textarea>
-          </label>
-        </div>
+      <div class="quiz-body" id="quizBody">
+        <div class="quiz-progress" id="quizProgress">Q <span id="quizCurrent">1</span> of 5</div>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+      </div>
+      <div class="quiz-result hidden" id="quizResult">
+        <div class="quiz-stamp" id="quizStamp">CLASSIFIED</div>
+        <div class="quiz-result-emoji" id="quizResultEmoji"></div>
+        <h3 class="quiz-result-title" id="quizResultTitle"></h3>
+        <p class="quiz-result-desc" id="quizResultDesc"></p>
+        <button class="loud-button quiz-retake" id="quizRetakeBtn">Retake Assessment</button>
       </div>
     </section>
 

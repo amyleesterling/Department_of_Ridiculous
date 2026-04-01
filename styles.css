@@ -98,7 +98,7 @@ body.disco-active .manifesto,
 body.disco-active .emergency-ledger,
 body.disco-active .infrastructure-failures,
 body.disco-active .tetris-arena,
-body.disco-active .form-27b,
+body.disco-active .citizen-quiz,
 body.disco-active .annex-card {
   background: rgba(16, 17, 38, 0.76);
   border-color: rgba(255, 255, 255, 0.08);
@@ -1738,88 +1738,143 @@ button {
   display: none;
 }
 
-/* ─── Form 27-B ─── */
-.form-27b {
+/* ─── Citizen Quiz ─── */
+.citizen-quiz {
   margin-top: 1.25rem;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 2rem;
   border-radius: 1.7rem;
   backdrop-filter: blur(16px);
   background:
-    radial-gradient(circle at top left, rgba(255, 59, 48, 0.06), transparent 28%),
+    radial-gradient(circle at top left, rgba(212, 160, 23, 0.07), transparent 28%),
     linear-gradient(145deg, rgba(255, 250, 243, 0.88), rgba(255, 241, 218, 0.8));
   border: 1px solid var(--panel-border);
   box-shadow: var(--shadow);
 }
 
-.form-27b-header {
+.quiz-header {
   margin-bottom: 1rem;
 }
 
-.form-27b-header h2 {
-  max-width: 16ch;
+.quiz-header h2 {
+  max-width: 18ch;
   font-size: clamp(1.8rem, 4vw, 3rem);
 }
 
-.form-27b-note {
-  max-width: 42rem;
-  margin: 0.6rem 0 0;
+.quiz-progress {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.75rem;
+}
+
+.quiz-question {
   font-family: "Crimson Pro", serif;
-  font-size: 1.05rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+  min-height: 2em;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.quiz-option-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border: 1.5px solid rgba(20, 33, 61, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font-family: "Crimson Pro", serif;
+  font-size: 1rem;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.quiz-option-btn:hover {
+  border-color: var(--gold);
+  background: rgba(255, 248, 230, 0.9);
+  transform: translateY(-2px);
+}
+
+.quiz-option-btn:active {
+  transform: translateY(0);
+}
+
+.quiz-option-btn.selected {
+  border-color: var(--navy);
+  background: rgba(26, 58, 107, 0.08);
+}
+
+/* result */
+.quiz-result {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+  position: relative;
+}
+
+.quiz-result.hidden {
+  display: none;
+}
+
+.quiz-stamp {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 2px solid var(--red);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.3rem;
+  transform: rotate(6deg);
+  opacity: 0;
+  animation: quizStampSlam 0.4s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes quizStampSlam {
+  0%   { opacity: 0; transform: rotate(6deg) scale(2.5); }
+  60%  { opacity: 1; transform: rotate(6deg) scale(0.95); }
+  100% { opacity: 1; transform: rotate(6deg) scale(1); }
+}
+
+.quiz-result-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-result-title {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.quiz-result-desc {
+  max-width: 34rem;
+  margin: 0 auto 1.5rem;
+  font-family: "Crimson Pro", serif;
+  font-size: 1.1rem;
   line-height: 1.55;
   color: var(--ink-soft);
 }
 
-.form-27b-body {
-  display: flex;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-.form-27b-body canvas {
-  display: block;
-  border-radius: 1rem;
-  border: 1px solid rgba(20, 33, 61, 0.1);
-  box-shadow: 0 12px 30px rgba(20, 33, 61, 0.1);
-  flex-shrink: 0;
-}
-
-.form-27b-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  flex: 1;
-  min-width: 220px;
-}
-
-.form-27b-field {
-  display: grid;
-  gap: 0.4rem;
-}
-
-.form-27b-field span {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
-.form-27b-field input,
-.form-27b-field textarea {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1px solid rgba(20, 33, 61, 0.14);
-  border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--ink);
-  font: inherit;
-  font-family: "Crimson Pro", serif;
-  font-size: 1rem;
-}
-
-.form-27b-field textarea {
-  resize: vertical;
-  min-height: 5rem;
+.quiz-retake {
+  margin: 0 auto;
 }
 
 /* ─── Frogger Overlay ─── */
@@ -2145,17 +2200,12 @@ body.government-mode .status-grid > div {
 }
 
 body.government-mode .tetris-arena,
-body.government-mode .form-27b {
+body.government-mode .citizen-quiz {
   max-width: none;
   margin: 0 0 1rem;
   padding: 1rem;
   background: transparent;
   border: 1px solid #8c8c8c;
-}
-
-body.government-mode .tetris-body,
-body.government-mode .form-27b-body {
-  flex-direction: column;
 }
 
 body.government-mode h1,
@@ -2340,14 +2390,8 @@ body.government-mode .composer-backdrop {
     justify-content: space-between;
   }
 
-  .form-27b-body {
-    flex-direction: column;
-  }
-
-  .form-27b-body canvas {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
+  .quiz-options {
+    grid-template-columns: 1fr;
   }
 }
 

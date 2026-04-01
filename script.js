@@ -782,3 +782,140 @@ updateMission();
 updateChaosUI();
 remixTicker();
 applyChaosStage();
+
+/* ─── Citizen Quiz ─── */
+(function initCitizenQuiz() {
+  const quizQuestions = [
+    {
+      text: "A raccoon has entered your office. Do you:",
+      options: [
+        { text: "File a noise complaint", type: "bureaucrat" },
+        { text: "Offer it a promotion", type: "raccoon" },
+        { text: "Start a parade", type: "maximalist" },
+        { text: "Fill out the form ironically", type: "anarchist" },
+      ],
+    },
+    {
+      text: "Your bridge is vibrating at the frequency of light jazz. This is:",
+      options: [
+        { text: "A structural concern requiring Form 7-B", type: "bureaucrat" },
+        { text: "An improvement", type: "raccoon" },
+        { text: "Evidence of feelings", type: "maximalist" },
+        { text: "Not my department", type: "anarchist" },
+      ],
+    },
+    {
+      text: "The disco protocol has been activated. You:",
+      options: [
+        { text: "Request an environmental impact study", type: "bureaucrat" },
+        { text: "Negotiate disco terms with the raccoons", type: "raccoon" },
+        { text: "Were already dancing", type: "maximalist" },
+        { text: "Comply, but only ironically", type: "anarchist" },
+      ],
+    },
+    {
+      text: 'A new emergency has been declared: "Unlicensed Sky Orbs." Your response:',
+      options: [
+        { text: "Convene a subcommittee", type: "bureaucrat" },
+        { text: "Befriend the orb", type: "raccoon" },
+        { text: "Throw a gala in its honor", type: "maximalist" },
+        { text: "Ignore it and see what happens", type: "anarchist" },
+      ],
+    },
+    {
+      text: "The Department requires your reason for existing. You write:",
+      options: [
+        { text: "\u2018To ensure all forms are filed in triplicate\u2019", type: "bureaucrat" },
+        { text: "\u2018The raccoons need me\u2019", type: "raccoon" },
+        { text: "\u2018To bring maximum pageantry to minimum situations\u2019", type: "maximalist" },
+        { text: "\u2018I was told there would be snacks\u2019", type: "anarchist" },
+      ],
+    },
+  ];
+
+  const archetypes = {
+    bureaucrat: {
+      emoji: "\uD83C\uDFDB\uFE0F",
+      title: "The Bureaucratic Visionary",
+      desc: "You see red tape not as an obstacle but as a decorative ribbon. Your filing cabinet has a filing cabinet.",
+    },
+    raccoon: {
+      emoji: "\uD83E\uDD9D",
+      title: "The Raccoon Diplomat",
+      desc: "Your methods are unorthodox. Your allies are furry. Your conviction is unshakeable.",
+    },
+    maximalist: {
+      emoji: "\uD83C\uDFBA",
+      title: "The Ceremonial Maximalist",
+      desc: "No event is too small for a brass section. You have never attended a \u201ccasual\u201d anything.",
+    },
+    anarchist: {
+      emoji: "\uD83D\uDCCB",
+      title: "The Compliant Anarchist",
+      desc: "You\u2019ll fill out the form, but only to prove a point. Your compliance is a form of protest.",
+    },
+  };
+
+  let currentQuestion = 0;
+  const scores = { bureaucrat: 0, raccoon: 0, maximalist: 0, anarchist: 0 };
+
+  const quizBody = document.getElementById("quizBody");
+  const quizResult = document.getElementById("quizResult");
+  const quizQuestion = document.getElementById("quizQuestion");
+  const quizOptions = document.getElementById("quizOptions");
+  const quizCurrent = document.getElementById("quizCurrent");
+  const quizResultEmoji = document.getElementById("quizResultEmoji");
+  const quizResultTitle = document.getElementById("quizResultTitle");
+  const quizResultDesc = document.getElementById("quizResultDesc");
+  const quizStamp = document.getElementById("quizStamp");
+  const quizRetakeBtn = document.getElementById("quizRetakeBtn");
+
+  function renderQuestion() {
+    const q = quizQuestions[currentQuestion];
+    quizCurrent.textContent = currentQuestion + 1;
+    quizQuestion.textContent = q.text;
+    quizOptions.innerHTML = "";
+    var shuffled = q.options.slice().sort(function () { return Math.random() - 0.5; });
+    shuffled.forEach(function (opt) {
+      var btn = document.createElement("button");
+      btn.className = "quiz-option-btn";
+      btn.textContent = opt.text;
+      btn.addEventListener("click", function () { selectAnswer(opt.type); });
+      quizOptions.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(type) {
+    scores[type]++;
+    currentQuestion++;
+    if (currentQuestion < quizQuestions.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    var winner = Object.keys(scores).reduce(function (a, b) { return scores[a] >= scores[b] ? a : b; });
+    var arch = archetypes[winner];
+    quizBody.classList.add("hidden");
+    quizResult.classList.remove("hidden");
+    quizResultEmoji.textContent = arch.emoji;
+    quizResultTitle.textContent = arch.title;
+    quizResultDesc.textContent = arch.desc;
+    quizStamp.style.animation = "none";
+    void quizStamp.offsetHeight;
+    quizStamp.style.animation = "";
+  }
+
+  function resetQuiz() {
+    currentQuestion = 0;
+    Object.keys(scores).forEach(function (k) { scores[k] = 0; });
+    quizBody.classList.remove("hidden");
+    quizResult.classList.add("hidden");
+    renderQuestion();
+  }
+
+  quizRetakeBtn.addEventListener("click", resetQuiz);
+  renderQuestion();
+})();
