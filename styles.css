@@ -2342,7 +2342,13 @@ body.government-mode .composer-backdrop {
 
 @media (max-width: 640px) {
   .hero {
+    grid-template-columns: 1fr;
     padding-top: 2rem;
+  }
+
+  h1 {
+    max-width: none;
+    font-size: clamp(2.4rem, 9vw, 3.8rem);
   }
 
   .site-share {
